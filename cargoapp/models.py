@@ -1,0 +1,19 @@
+from django.db import models
+
+class User(models.Model):
+    name = models.CharField(max_length=15)
+    phone_num = models.CharField(max_length=30)
+    group = models.CharField(max_length=30)
+    alias = models.CharField(max_length=30)
+    rfid = models.CharField(max_length=200)
+    def __unicode__(self):
+        return self.name
+
+class Checkin(models.Model):
+    location = models.CharField(max_length=200)
+    rfid = models.CharField(max_length=200)
+    checkin_date = models.DateTimeField(auto_now_add=True)
+    displayed = models.BooleanField()
+    def __unicode__(self):
+        return unicode(self.checkin_date)
+    

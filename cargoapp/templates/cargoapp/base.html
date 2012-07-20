@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+
+{%block title%}
+{% endblock %}
+
+<link rel="stylesheet" href="{{STATIC_URL}}css/bootstrap.css">
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery-latest.js"></script>
+<style type="text/css">
+ body {
+       background-color: #20502F;
+  }
+</style>
+<script type="text/javascript" >
+function clearField(id)
+{
+	document.getElementById(id).value='';
+}
+</script>
+
+</head>
+
+<body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="brand" href="/index">cargo</a>
+          <ul class="nav">
+            <li><a href="/checkin">RFID</a></li>  
+            <li><a href="/calls">Calls</a></li>  
+            <li><a href="/registration">Registration</a></li>  
+          </ul>
+          <ul class="nav pull-right">
+            <li class="divider-vertical"></li>            
+          {%if user %}
+         	{%if user.is_authenticated %}
+           	 <li><a href="#">Logged in as {{user}}</a></li>
+           	 <li class="divider-vertical"></li>
+           	 <li><a href="./logout">Log out</a></li>
+          	{%else%}
+          	<li><a href="./login">Sign up | Log in</a></li>
+          	{%endif%} 
+          {%endif%}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="container-fluid">
+	
+		<div class="content">
+
+		<div id="content" align="left">
+		{%block content%}
+		{% endblock %}
+		</div>
+		
+		
+        <footer align="center">
+           <a rel='twipsy' title='Orchid' href="http://www.orchid.ac.uk">
+            <img src="{{STATIC_URL}}images/orchid-logo-bw-small.gif" alt="Orchid Project"/>
+            </a>
+           <p><small>&copy; 2012.</small> 
+          </p>
+        </footer>
+      </div>
+	</div>
+	
+	
+
+
+
+</body>
+</html>

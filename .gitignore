@@ -1,0 +1,4 @@
+*.pyc
+db/sqlite.db
+.project
+.pydevproject
