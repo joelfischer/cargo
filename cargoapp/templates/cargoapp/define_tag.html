@@ -1,0 +1,138 @@
+<!doctype html>
+<html>
+<head>
+
+<title>Cargo setup</title>
+
+<link rel="stylesheet" href="{{STATIC_URL}}css/bootstrap.css">
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery-latest.js"></script>
+<style type="text/css">
+ body {
+       background-color: #20502F;
+  }
+</style>
+<script type="text/javascript" >
+function clearField(id)
+{
+	document.getElementById(id).value='';
+}
+
+function listenForTags() {
+	  // Call the server to get some data ...
+	  
+	 // if (test>0) {
+		  //document.getElementById('test').innerHTML = '<h2>'+test+'</h2>';
+	//  }
+	//  test = test+1;
+		  
+	  $.get("/setup/", function(data) {
+		  //append data to list
+		  
+		  var test = data;
+
+		  if (data.length>0) {
+			
+			if (data.indexOf("Already") > -1) {
+				//this tag is already assigned
+				document.getElementById('msgDiv').style.display = 'block';
+				document.getElementById('msgDiv').innerHTML = '<h3>'+data+'</h3>';
+			} 
+			else {
+				document.getElementById('msgDiv').style.display = 'none';
+				document.getElementById('tagFormDiv').style.display= 'block';
+			  	document.getElementById('tagIdDiv').innerHTML = data;
+			}
+		  }
+		
+	  });
+	  
+	  var t = setTimeout("listenForTags()", 500);
+	
+}
+</script>
+
+</head>
+<body onload="listenForTags()">
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="brand" href="/index">cargo</a>
+          <ul class="nav">
+            <li><a href="/checkin">Check-ins</a></li>  
+            <li><a href="/calls">Calls</a></li>  
+            <li><a href="/registration">Registration</a></li>  
+            <li><a href="/setup">Set up tags</a></li>  
+          </ul>
+          <ul class="nav pull-right">
+            <li class="divider-vertical"></li>            
+          {%if user %}
+         	{%if user.is_authenticated %}
+           	 <li><a href="#">Logged in as {{user}}</a></li>
+           	 <li class="divider-vertical"></li>
+           	 <li><a href="./logout">Log out</a></li>
+          	{%else%}
+          	<li><a href="./login">Sign up | Log in</a></li>
+          	{%endif%} 
+          {%endif%}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+<div class="container-fluid">
+ <div class="content">
+  <div class="hero-unit" align="left">
+
+	<div class="page-header">
+	 <h1>define tags</h1>
+	</div>
+	<div>
+	<h2>Set up a new tag</h2>
+		<div id="tagFormDiv" style="display: none">
+		 <p>Assign a unique alias for tag <div id="tagIdDiv"></div> </p>
+		 <form class="well" name="tagForm" id="tagForm" align="left" action="/setup/" method="post"> 
+		  {% csrf_token %}
+		  <div class="clearfix">
+		   <label for="user">alias</label> 
+		     <div class="input">
+		      <input class="large" type="text" id="alias" name="alias" value="alias" onfocus="clearField(id)">
+		     </div>
+		     <input type="submit" class="btn-large btn-primary" value="Assign" />
+		  </div>
+		 </form>
+		 </div>
+		 <div id="msgDiv" class="alert alert-success" style="display: none">	      
+	     </div>
+	     <div id="instructionsDiv">
+	      <h3>Scan a tag to assign it.</h3>	      
+	     </div>
+	     
+	</div>
+	<br>
+	
+	<div>
+	 <h2>Already set up tags</h2>
+	  {%if all_tags|length < 1 %}
+	  <div>
+	        <h3>No tags defined.</h3>
+	  </div>
+	  {%else%}
+		  {%for tag in all_tags%}
+	       <div>
+	        <h3>TagId: {{tag.rfid}},  Alias: {% if tag.alias|length < 1 %} Not assigned! {%else%} {{tag.alias}} {%endif%}</h3>
+	       </div>
+	      {%endfor%}
+	  {%endif%}
+	</div>
+
+   </div>
+ </div>
+ <footer align="center">
+        <a rel='twipsy' title='Orchid' href="http://www.orchid.ac.uk">
+         <img src="{{STATIC_URL}}images/orchid-logo-bw-small.gif" alt="Orchid Project"/>
+         </a>
+        <p><small>&copy; 2012.</small> 
+       </p>
+     </footer>
+</div>
+

@@ -2,7 +2,7 @@
 <html>
 <head>
 
-<title>Cargo checkins</title>
+<title>Cargo check-ins</title>
 
 <link rel="stylesheet" href="{{STATIC_URL}}css/bootstrap.css">
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery-latest.js"></script>
@@ -17,7 +17,6 @@ function clearField(id)
 	document.getElementById(id).value='';
 }
 
-var test = 0;
 function updatePage() {
 	  // Call the server to get some data ...
 	  
@@ -31,7 +30,6 @@ function updatePage() {
 		  //alert("RETURNED:" + data);
 		  var items = [];
 		  var json = (jQuery.parseJSON(data));
-		  var test = json;
 		  if (json!=null) {
 			  for (var i=0; i<json.length; i++) {
 				  var date = json[i].fields.checkin_date;
@@ -57,9 +55,10 @@ function updatePage() {
         <div class="container-fluid">
           <a class="brand" href="/index">cargo</a>
           <ul class="nav">
-            <li><a href="/checkin" class="active">RFID</a></li>  
+            <li><a href="/checkin" class="active">Check-ins</a></li>  
             <li><a href="/calls">Calls</a></li>  
-            <li><a href="/registration">Registration</a></li>  
+            <li><a href="/registration">Registration</a></li>
+            <li><a href="/setup">Set up tags</a></li>  
           </ul>
           <ul class="nav pull-right">
             <li class="divider-vertical"></li>            
@@ -81,7 +80,7 @@ function updatePage() {
 	 <div class="content">
       <div class="hero-unit" align="left">
        <div class="page-header">
-        <h1>checkins</h1>
+        <h1>check-ins</h1>
        </div>
        
        <!-- load data passed in from view -->

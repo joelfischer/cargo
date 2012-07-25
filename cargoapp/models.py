@@ -17,3 +17,11 @@ class Checkin(models.Model):
     def __unicode__(self):
         return unicode(self.checkin_date)
     
+class Tag(models.Model):
+    rfid = models.CharField(max_length=200, unique = True)
+    alias = models.CharField(max_length=200, unique = True)
+    assigned = models.BooleanField()    
+    def __unicode__(self):
+        return self.rfid
+    
+    
