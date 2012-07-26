@@ -8,11 +8,7 @@ from datetime import *
 from django import forms
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
-<<<<<<< HEAD
 from cargoapp.models import User, Checkin, Tag
-=======
-from cargoapp.models import User, Checkin, Message
->>>>>>> Added basic Calls view functionality
 from django.core import serializers
 
 def index(request):
@@ -21,10 +17,6 @@ def index(request):
 
 def calls(request):
     values = {}
-    users = User.objects.all()
-    messages = Message.objects.all()
-    
-    values = {'users':users, 'messages':messages}
     return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request))
 
 def registration(request):

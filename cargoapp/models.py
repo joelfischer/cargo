@@ -17,7 +17,6 @@ class Checkin(models.Model):
     def __unicode__(self):
         return unicode(self.checkin_date)
     
-<<<<<<< HEAD
 class Tag(models.Model):
     rfid = models.CharField(max_length=200, unique = True)
     alias = models.CharField(max_length=200, unique = True)
@@ -26,10 +25,3 @@ class Tag(models.Model):
         return self.rfid
     
     
-=======
-class Message(models.Model):
-	name = models.CharField(max_length=200)
-	content = models.CharField(max_length=50)
-	def __unicode__(self):
-		return unicode(self.name)
->>>>>>> Added basic Calls view functionality
