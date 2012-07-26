@@ -11,9 +11,23 @@
  <div class="page-header">
   <h1>calls</h1>
  </div>
- 
- 
-
-</div>
+ <form name="callform" action="http://api.tropo.com/1.0/sessions?" target="_blank">
+ Call player:
+ <select name="numberToCall">
+ {% for user in users%}
+  <option value="{{user.phone_num}}">{{user.name}}</option>
+ {% endfor %}
+ </select>
+ and play message:
+ <select name ="messageToSay">
+ {% for message in messages%}
+  <option value="{{message.content}}">{{message.name}}</option>
+ {% endfor %}
+ </select>
+ <input type="hidden" name="token" value="13acde1200cc5142acde42576458b5b7a48c638058a26304bdf34c476b11647b18c0da3b5ce13ceb7cb852a5">
+ <input type="hidden" name="action" value="create">
+  <input type="submit" value="CALL!">
+ </form>
+ </div>
 
  {% endblock %}
