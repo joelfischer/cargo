@@ -24,4 +24,8 @@ class Tag(models.Model):
     def __unicode__(self):
         return self.rfid
     
-    
+class Message(models.Model):
+	name = models.CharField(max_length=200)
+	content = models.CharField(max_length=50)
+	def __unicode__(self):
+		return unicode(self.name)    

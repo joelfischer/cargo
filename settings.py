@@ -6,7 +6,7 @@ TEMPLATE_DEBUG = DEBUG
 ROOT_PATH = os.path.dirname(__file__)
 
 ADMINS = (
-     ('jef', 'jef@cs.nott.ac.uk'),
+     ('kqb', 'K.Bachour@nottingham.ac.uk'),
 )
 
 MANAGERS = ADMINS
@@ -14,7 +14,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '/Users/dschoul2/Dev/cargo/db/sqlite.db',                      # Or path to database file if using sqlite3.
+        'NAME': '/Users/Khaled/Documents/workspace/cargo/db/sqlite.db',                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
