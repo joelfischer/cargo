@@ -3,7 +3,7 @@ from django.shortcuts import render_to_response
 from django.http import Http404
 from django.template import RequestContext
 from django.http import HttpRequest as request_post
-import urllib2, urllib, json
+import urllib2, urllib, json, copy
 from datetime import *
 from django import forms
 from django.shortcuts import render_to_response
@@ -18,9 +18,31 @@ def index(request):
 def calls(request):
     values = {}
     return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request))
-
+ 
 def registration(request):
     values = {}
+    error_msg = ''
+    try:
+        #Get posted values
+        print repr(request.POST)
+        post_dic = request.POST
+        user = str(post_dic.get('user_name'))
+        if user is '':
+            error_msg = '- Missing user name -'
+        number = str(post_dic.get('number'))
+        if number is '':
+            error_msg += '- Missing phone number -'
+        alias = str(post_dic.get('alias'))
+        if alias is '':
+            error_msg += '- Missing alias -'
+        if user is not '' and number is not '' and alias is not'':
+            #check whether alias exists
+            #create a new user
+            u = User (name = user, phone_num = number, alias = alias)
+            u.save()
+        values = {'user': user, 'alias': alias, 'number': number, 'error_msg': error_msg}
+    except Exception as e:
+        print e 
     return render_to_response('cargoapp/registration.html', values, context_instance=RequestContext(request))
 
 @csrf_exempt 
@@ -171,5 +193,16 @@ def setup(request):
                                    context_instance=RequestContext(request))
         
 def handle_reg(request):
+    try:
+        #Get posted values
+        print repr(request.POST)
+        post_dic = request.POST
+        user = str(post_dic.get('user_name'))
+        alias = str(post_dic.get('alias'))
+        number = str(post_dic.get('number'))
+        print user
+        
+    except Exception as e:
+        print e 
     response = {'response':'success'}
     return HttpResponse(response)

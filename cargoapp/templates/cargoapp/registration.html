@@ -14,25 +14,33 @@
  
  <div>
  <h2>Associate a user with an rfid tag</h2>
- <form class="well" action="/handle_registration/" method="post"> {% csrf_token %}
+ <form class="well" action="/registration/" method="post"> {% csrf_token %}
   <div>
   <label>user name</label>
-  <input type="text" id="user_name" class="span3" placeholder="user name">
+  <input type="text" id="user_name" name="user_name" class="span3" placeholder="user name">
    <label>phone number</label>
-  <input type="text" id="number" class="span3" placeholder="phone number">
+  <input type="text" id="number" name="number" class="span3" placeholder="phone number">
    <label>rfid alias</label>
-  <input type="text" id="alias" class="span3" placeholder="alias">
+  <input type="text" id="alias" name="alias" class="span3" placeholder="alias">
   <span class="help-block">The alias defined when setting up the rfid tags.</span>
   </div>
   <button type="submit" class="btn btn-primary btn-large">Save</button>
 </form>
  </div>
  
- {%if response%}
- <div>
- {{response}}
+ {%if error_msg != ''%}
+ <div class="alert alert-error">
+  {{error_msg}}
+ </div>
+ {%else%}
+ {%if user != 'None'%}
+ <div class="alert alert-success">
+ <h2>Successfully registered user {{user}}, with number: {{number}} to tag: {{alias}}</h2>
  </div>
  {%endif%}
+ {%endif%}
+ 
+
  
 </div>
 
