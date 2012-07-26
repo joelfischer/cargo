@@ -2,13 +2,3 @@
 db/sqlite.db
 .project
 .pydevproject
-
-settings.py
-
-cargoapp/.DS_Store
-
-cargoapp/static/.DS_Store
-
-cargoapp/templates/.DS_Store
-
-.DS_Store
