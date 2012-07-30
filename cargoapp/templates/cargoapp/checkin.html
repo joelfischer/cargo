@@ -30,21 +30,73 @@ function updatePage() {
 		  //alert("RETURNED:" + data);
 		  var items = [];
 		  var json = (jQuery.parseJSON(data));
+		  var new_checkin = '';
+		  var user_credit = '';
+		  var date = '';
+		  var tag = '';
+		  var location  = '';
+		  var reader = '';
+		  var reader_credit = '';
 		  if (json!=null) {
 			  for (var i=0; i<json.length; i++) {
-				  var date = json[i].fields.checkin_date;
-				  var tag = json[i].fields.rfid;
-				  var location = json[i].fields.location;
-				  items.push('<div><h2>TagId: '+tag+', Location: '+location+ ', Time: '+date +'</h2></div>');
+				  if(i%2==0) {
+					  date = json[i].fields.checkin_date;
+					  tag = json[i].fields.rfid;
+					  location = json[i].fields.location;
+					  reader = json[i].fields.name;
+					  reader_credit = json[i].fields.reader_credit;
+					  user_credit = json[i].fields.user_credit;
+					  new_checkin='<div class="well" style="background-color:#EEE" id="'+date+'"><p>';
+				  }
+				  else if (i%2==1) {
+					  var name = json[i].fields.name;
+					  var credit = json[i].fields.credit;
+					  var alias = json[i].fields.alias;
+					  var group = json[i].fields.group;
+					  new_checkin +='<strong>'+name+'</strong> (tag '+tag+' "'+alias+'", group '+group+') checked in at <strong>'+reader+ '</strong>('+location+') at: '+date+'. <strong>New credit: '+user_credit+'</strong>. Reader credit now: '+reader_credit+'.</p></div>';
+					  items.push(new_checkin);
+				  }
+			  }
+			  if (new_checkin != '') {
+				  document.getElementById('checkins').innerHTML = items+document.getElementById('checkins').innerHTML;
+				  var element = document.getElementById(date);	
+				  element.FadeTimeLeft = 500.0;
+				  var eid = date;
+				  setTimeout("animateFade(" + new Date().getTime() + ",'" + eid + "')", 33);
 			  }
 			  //$("#checkins").html(items);
-			  document.getElementById('checkins').innerHTML += items;
+			  
 		  }
 	  });
 	  
 	  var t = setTimeout("updatePage()", 500);
-	
 }
+var TimeToFade = 500.0;
+
+function animateFade(lastTick, eid)
+{  
+  var curTick = new Date().getTime();
+  var elapsedTicks = curTick - lastTick;
+  
+  var element = document.getElementById(eid);
+ 
+  if(element.FadeTimeLeft <= elapsedTicks)
+  {
+    element.style.opacity = '1';
+    element.style.filter = 'alpha(opacity = 100)';
+    return;
+  }
+ 
+  element.FadeTimeLeft -= elapsedTicks;
+  var newOpVal = element.FadeTimeLeft/TimeToFade;
+  newOpVal = 1 - newOpVal;
+
+  element.style.opacity = newOpVal;
+  element.style.filter = 'alpha(opacity = ' + (newOpVal*100) + ')';
+  
+  setTimeout("animateFade(" + curTick + ",'" + eid + "')", 33);
+}
+
 </script>
 
 </head>
@@ -83,16 +135,27 @@ function updatePage() {
         <h1>check-ins</h1>
        </div>
        
-       <!-- load data passed in from view -->
-       {%for checkin in all_checkins%}
-       <div>
-        <h2>TagId: {{checkin.rfid}},  Location: {{checkin.location}}, Time: {{checkin.checkin_date}}</h2>
-       </div>
-       {%endfor%}
- 
- 	   <!-- placeholder for data passed via jQuery -->
+       <!-- placeholder for data passed via jQuery -->
  	   <div id="checkins">
  	   </div>
+       
+       <!-- load data passed in from view -->
+       {%if all_checkins%}
+      
+       {%for checkin in all_checkins%}
+       	{%for user in all_users%} 
+       		{%if user.rfid = checkin.rfid%}
+       <div class="well" style="background-color:#EEE">
+        <p><strong>{{user.name}}</strong> (tag {{checkin.rfid}} "{{user.alias}}", group {{user.group}}) checked in at <strong>{{checkin.name}}</strong>({{checkin.location}}) at {{checkin.checkin_date}}. <strong>New credit: {{checkin.user_credit}}</strong>. New reader credit: {{checkin.reader_credit}}.  
+        </p>        
+       </div>
+       	{%endif%}
+       	{%endfor%}  
+       {%endfor%}
+       {%else%}
+        <div><h2>Watch this space for check ins.</h2></div>
+       {%endif%}
+ 
  	  </div>
  	 </div>
 		

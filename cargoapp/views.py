@@ -24,7 +24,6 @@ def calls(request):
     return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request))
  
 def registration(request):
-    values = {}
     error_msg = ''
     try:
         #Get posted values
@@ -39,34 +38,56 @@ def registration(request):
         alias = str(post_dic.get('alias'))
         if alias is '':
             error_msg += '- Missing alias -'
-        if user is not '' and number is not '' and alias is not'':
+        group = str(post_dic.get('group'))
+        if user != 'None' and user is not '' and number is not '' and alias is not '':
             #check whether alias exists
-            #create a new user
-            u = User (name = user, phone_num = number, alias = alias)
-            u.save()
-        values = {'user': user, 'alias': alias, 'number': number, 'error_msg': error_msg}
+            try:
+                t = Tag.objects.get(alias=alias)
+                rfid = t.rfid
+            except Exception as e:
+                print e
+                error_msg = str(e) + ' - wrong alias' 
+            #check whether we've already associated that tag to a user
+            try: 
+                u = User.objects.get(alias = alias)
+                error_msg += '-- Tag with alias "' +alias + '" already assigned to another player --'  
+            except Exception as e:
+                print e
+                #ok, create a new user
+                u = User (name = user, phone_num = number, alias = alias, rfid = rfid, credit = 0, group = group)
+                u.save()
+                print 'created new player: '+user
     except Exception as e:
         print e 
+    all_users = User.objects.all()
+    print all_users
+    values = {'user': user, 'alias': alias, 'number': number, 'error_msg': error_msg, 'all_users': all_users}
     return render_to_response('cargoapp/registration.html', values, context_instance=RequestContext(request))
 
 @csrf_exempt 
 def checkin(request):
     error_msg=''
-    values = {}
     tagId = ''
     all_checkins = {}
     if request.is_ajax():
         update = []
-        #TODO: return non-displayed checkins.
+        #return non-displayed checkins.
         try: 
             all_checkins = Checkin.objects.all()
+            all_users = User.objects.all()
             for checkin in all_checkins:
                 if checkin.displayed == False:
                     update.append(checkin)
                     checkin.displayed = True
                     checkin.save()
-                    #TODO: convert to json
-                    update = serializers.serialize("json", update)
+                    #try to find the user registered with this tag
+                    try: 
+                        u = User.objects.get(rfid = checkin.rfid)
+                        update.append(u)
+                    except Exception as e:
+                        print e
+                    #convert to json
+            update = serializers.serialize("json", update)
         except Exception as e:
             print e
         return HttpResponse(update)
@@ -76,43 +97,67 @@ def checkin(request):
             try:
                 tagId = str(dic['tagId'])
                 readerId = str(dic['readerId'])
+                name = str(dic['name'])
+                credit = int(dic['credit'])
+                reader_credit = int(dic['credit_total'])
+                if str(dic['is_addition'])=='True':
+                    is_addition = True
+                else:
+                    is_addition = False
+                print is_addition
             except Exception as e:
                 print e
-            if tagId is not '':         
-#                try:
-#                    r = RFID.objects.create(rfid = tagId)
-#                    r.save()
-#                except Exception as e:
-#                    print e
-#                    r = RFID.objects.get(rfid = tagId)
+            if tagId is not '':  
+                user, user_credit, error = addOrSubtract(tagId, credit, is_addition)
+                if error is not '':
+                    print 'Check in with unassigned tag'
+                else:
+                    print 'User "'+ user +'" checked in, new credit: '+ str(user_credit)  
+                               
+                c = Checkin (location = readerId, rfid = tagId, name=name, reader_credit = reader_credit, user_credit = user_credit)
+                c.save()   
                 
-                c = Checkin (location = readerId, rfid = tagId)
-                c.save()                       
-#                c.rfid.add(r)
-         
-#                all_rfids = RFID.objects.all()            
-#                print all_rfids 
-#                
-#                values['tagId'] = tagId
-#                values['readerId'] = readerId 
+                all_checkins = Checkin.objects.all()
+                all_checkins.reverse()
+                all_users = User.objects.all()    
+                                    
                 print("|-----------------------|")
                 print("|-------NEW POST--------|")
                 print("|-READER  -|-   TAGID  -|")
                 print("|- %s -|-%s-|" % (readerId, tagId) )
                 print("|-----------------------|")
-                all_checkins = Checkin.objects.all()
+                
             else:
-                #this is a browser request, mark as displayed
-                all_checkins = Checkin.objects.all()
+                #this is a browser request, flag as displayed
+                all_checkins = Checkin.objects.order_by('checkin_date')
+                all_checkins = all_checkins.reverse()
+                print all_checkins
+                all_users = User.objects.all()
                 for checkin in all_checkins:
                     checkin.displayed = True
                     checkin.save()
         except Exception as e:                       
             error_msg = str(e)
             print error_msg
-        return render_to_response('cargoapp/checkin.html', {'all_checkins': all_checkins},
+        return render_to_response('cargoapp/checkin.html', {'all_checkins': all_checkins, 'all_users': all_users},
                                    context_instance=RequestContext(request))
-    
+
+def addOrSubtract(tagId, credit, is_addition):
+    error_msg = ''
+    user = ''
+    print credit
+    try:
+        u = User.objects.get(rfid = tagId)
+        user = u.name
+        if is_addition:
+            u.credit += credit
+        else:
+            u.credit -= credit
+        u.save()
+        credit = u.credit
+    except Exception as e:
+        error_msg = e
+    return user, credit, error_msg
 
 @csrf_exempt 
 def setup(request):
@@ -130,8 +175,7 @@ def setup(request):
     except Exception as e:
         print e
     if request.is_ajax():
-        update = []
-        #TODO: return non-displayed checkins.
+        #return non-displayed checkins.
         try: 
             r = Tag.objects.get(alias = '')
             response = r.rfid
@@ -150,18 +194,6 @@ def setup(request):
             print 'not an old tag'
             print e 
         return HttpResponse(response)
-#        try: 
-#            all_checkins = Checkin.objects.all()
-#            for checkin in all_checkins:
-#                if checkin.displayed == False:
-#                    update.append(checkin)
-#                    checkin.displayed = True
-#                    checkin.save()
-#                    #TODO: convert to json
-#                    update = serializers.serialize("json", update)
-#        except Exception as e:
-#            print e
-#        return HttpResponse(update)
     else: 
         try:
             dic = request.POST
@@ -196,17 +228,3 @@ def setup(request):
         return render_to_response('cargoapp/define_tag.html', {'all_tags': all_tags},
                                    context_instance=RequestContext(request))
         
-def handle_reg(request):
-    try:
-        #Get posted values
-        print repr(request.POST)
-        post_dic = request.POST
-        user = str(post_dic.get('user_name'))
-        alias = str(post_dic.get('alias'))
-        number = str(post_dic.get('number'))
-        print user
-        
-    except Exception as e:
-        print e 
-    response = {'response':'success'}
-    return HttpResponse(response)
