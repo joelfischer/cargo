@@ -25,7 +25,7 @@ function updatePage() {
 	//  }
 	//  test = test+1;
 	  
-	  $.get("/checkin/", function(data) {
+	  $.get("/cargo/checkin/", function(data) {
 		  //append data to list
 		  //alert("RETURNED:" + data);
 		  var items = [];
@@ -118,9 +118,9 @@ function animateFade(lastTick, eid)
          	{%if user.is_authenticated %}
            	 <li><a href="#">Logged in as {{user}}</a></li>
            	 <li class="divider-vertical"></li>
-           	 <li><a href="./logout">Log out</a></li>
+           	 <li><a href="/cargo/logout">Log out</a></li>
           	{%else%}
-          	<li><a href="./login">Sign up | Log in</a></li>
+          	<li><a href="/cargo/login">Sign up | Log in</a></li>
           	{%endif%} 
           {%endif%}
           </ul>
