@@ -21,7 +21,20 @@
    <label>phone number</label>
   <input type="text" id="number" name="number" {%if error_msg != ''%} value="{{number}}" {%endif%} class="span3" placeholder="phone number">
    <label>rfid alias</label>
-  <input type="text" id="alias" name="alias" {%if error_msg != ''%} value="{{alias}}" {%endif%} class="span3" placeholder="alias">
+ 
+  {%if tags|length > 0%}
+  <select name="alias">
+  {%for tag in tags%}
+  <option value="{{tag.alias}}">{{tag.alias}}</option>
+  {%endfor%}
+  </select>
+  {%else%}
+  <div class="alert alert-info">
+  <h4>No (more) unassigned tags. <a href="/cargo/setup/">Set up tags</a> to register more players.</h4>
+ </div>
+  {%endif%}
+  
+  <!--  <input type="text" id="alias" name="alias" {%if error_msg != ''%} value="{{alias}}" {%endif%} class="span3" placeholder="alias">-->
   <span class="help-block">The alias defined when setting up the rfid tags.</span>
   <label>assign to group</label>
   <select name="group">
