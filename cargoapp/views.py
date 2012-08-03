@@ -60,8 +60,17 @@ def registration(request):
     except Exception as e:
         print e 
     all_users = User.objects.all()
-    print all_users
-    values = {'user': user, 'alias': alias, 'number': number, 'error_msg': error_msg, 'all_users': all_users}
+    all_tags = Tag.objects.all()
+    print all_tags
+    unused_tags = []
+    for tag in all_tags:
+        exclude_tag = False
+        for user in all_users:
+            if tag.alias == user.alias:
+                exclude_tag = True
+        if exclude_tag == False:
+            unused_tags.append(tag)   
+    values = {'user': user, 'alias': alias, 'number': number, 'error_msg': error_msg, 'all_users': all_users, 'tags':unused_tags}
     return render_to_response('cargoapp/registration.html', values, context_instance=RequestContext(request))
 
 @csrf_exempt 
@@ -73,14 +82,17 @@ def checkin(request):
         update = []
         #return non-displayed checkins.
         try: 
+            lastCall = request.session['last_update']
+            
             all_checkins = Checkin.objects.all()
             all_users = User.objects.all()
             for checkin in all_checkins:
-                if checkin.displayed == False:
+                checkin_timestamp = int(checkin.checkin_date.strftime('%s%f'))
+                lastCall_timestamp = int(lastCall.strftime('%s%f'))
+                if (checkin_timestamp-lastCall_timestamp>0):
+#                    print str(checkin_timestamp-lastCall_timestamp)
+#                    print 'check in SINCE last refresh -- UPDATE -- '
                     update.append(checkin)
-                    checkin.displayed = True
-                    checkin.save()
-                    #try to find the user registered with this tag
                     try: 
                         u = User.objects.get(rfid = checkin.rfid)
                         update.append(u)
@@ -90,6 +102,7 @@ def checkin(request):
             update = serializers.serialize("json", update)
         except Exception as e:
             print e
+        request.session['last_update'] = datetime.now()
         return HttpResponse(update)
     else: 
         try:
@@ -117,7 +130,7 @@ def checkin(request):
                 c = Checkin (location = readerId, rfid = tagId, name=name, reader_credit = reader_credit, user_credit = user_credit)
                 c.save()   
                 
-                all_checkins = Checkin.objects.all()
+                all_checkins = Checkin.objects.order_by('checkin_date')
                 all_checkins.reverse()
                 all_users = User.objects.all()    
                                     
@@ -133,9 +146,10 @@ def checkin(request):
                 all_checkins = all_checkins.reverse()
                 print all_checkins
                 all_users = User.objects.all()
-                for checkin in all_checkins:
-                    checkin.displayed = True
-                    checkin.save()
+#                for checkin in all_checkins:
+#                    checkin.displayed = True
+#                    checkin.save()
+    
         except Exception as e:                       
             error_msg = str(e)
             print error_msg
