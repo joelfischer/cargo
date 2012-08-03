@@ -14,7 +14,7 @@
  
  <div>
  <h2>Associate a user with an rfid tag</h2>
- <form class="well" action="/registration/" method="post"> {% csrf_token %}
+ <form class="well" action="/cargo/registration/" method="post"> {% csrf_token %}
   <div>
   <label>user name</label>
   <input type="text" id="user_name" name="user_name" {%if error_msg != ''%} value="{{user}}" {%endif%} class="span3" placeholder="user name">
