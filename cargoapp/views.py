@@ -73,6 +73,9 @@ def checkin(request):
         update = []
         #return non-displayed checkins.
         try: 
+            session = request.get('session')
+            print session
+            
             all_checkins = Checkin.objects.all()
             all_users = User.objects.all()
             for checkin in all_checkins:
