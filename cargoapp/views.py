@@ -152,7 +152,7 @@ def registration(request):
                 exclude_tag = True
         if exclude_tag == False:
             unused_tags.append(tag)   
-    values = {'user': user, 'alias': alias, 'number': number, 'error_msg': error_msg, 'all_users': all_users, 'tags':unused_tags}
+    values = {'username': user, 'alias': alias, 'number': number, 'error_msg': error_msg, 'all_users': all_users, 'tags':unused_tags}
     return render_to_response('cargoapp/registration.html', values, context_instance=RequestContext(request))
 
 @csrf_exempt 

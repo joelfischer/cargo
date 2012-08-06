@@ -15,7 +15,6 @@ urlpatterns = patterns('',
     url(r'^cargo/registration/$', 'cargoapp.views.registration'),
     url(r'^cargo/index/$', 'cargoapp.views.index'),
     url(r'^cargo/setup/$', 'cargoapp.views.setup'),
-    url(r'^cargo/handle_registration/$', 'cargoapp.views.handle_reg'),
     url(r'^cargo/$', 'cargoapp.views.index'),
     url(r'^cargo/report_call_status/$', 'cargoapp.views.report_call_status'),
     url(r'^cargo/register_user_post/$','cargoapp.views.register_user_post'),
@@ -26,4 +25,5 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
      url(r'^admin/', include(admin.site.urls)),
+     url(r'^cargo/admin/', include(admin.site.urls)),
 )

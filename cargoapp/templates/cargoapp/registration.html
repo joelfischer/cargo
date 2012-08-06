@@ -17,7 +17,7 @@
  <form class="well" action="/cargo/registration/" method="post"> {% csrf_token %}
   <div>
   <label>user name</label>
-  <input type="text" id="user_name" name="user_name" {%if error_msg != ''%} value="{{user}}" {%endif%} class="span3" placeholder="user name">
+  <input type="text" id="user_name" name="user_name" {%if error_msg != ''%} value="{{username}}" {%endif%} class="span3" placeholder="user name">
    <label>phone number</label>
   <input type="text" id="number" name="number" {%if error_msg != ''%} value="{{number}}" {%endif%} class="span3" placeholder="phone number">
    <label>rfid alias</label>
