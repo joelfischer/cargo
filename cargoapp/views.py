@@ -35,8 +35,8 @@ def calls(request):
     	call.save();
     	
     	try:
-    		#conn = httplib.HTTPConnection('api.tropo.com');
-    		conn = httplib.HTTPConnection('128.243.20.248',3128);
+    		conn = httplib.HTTPConnection('api.tropo.com');
+    		#conn = httplib.HTTPConnection('128.243.20.248',3128);
     		conn.request("GET", 'http://api.tropo.com/1.0/sessions?action=create&token='+token+'&numberToCall='+user.phone_num+'&messageToSay='+msg.content+'&call_id='+str(call.id));
     	    
     		if (conn.getresponse()):
