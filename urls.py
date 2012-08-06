@@ -16,6 +16,8 @@ urlpatterns = patterns('',
     url(r'^index/$', 'cargoapp.views.index'),
     url(r'^setup/$', 'cargoapp.views.setup'),
     url(r'^handle_registration/$', 'cargoapp.views.handle_reg'),
+    url(r'^report_call_status/$', 'cargoapp.views.report_call_status'),
+    url(r'^register_user_post/$','cargoapp.views.register_user_post'),
     url(r'^$', 'cargoapp.views.index'),
     # url(r'^cargoapp/', include('firesim.foo.urls')),
 

@@ -26,6 +26,14 @@ class Tag(models.Model):
     
 class Message(models.Model):
 	name = models.CharField(max_length=200)
-	content = models.CharField(max_length=50)
+	content = models.TextField()
 	def __unicode__(self):
 		return unicode(self.name)    
+
+class Call(models.Model):
+	callee = models.CharField(max_length=200)
+	message = models.CharField(max_length=200)
+	date = models.DateTimeField(auto_now_add=True)
+	status = models.IntegerField(default=0)
+	def __unicode__(self):
+		return unicode(self.id)   

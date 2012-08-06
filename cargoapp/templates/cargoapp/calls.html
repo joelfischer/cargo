@@ -6,28 +6,75 @@
 
 {%block content%}
 
-<div class="hero-unit" align="left">
+<div class="hero-unit" align="left"">
 
  <div class="page-header">
   <h1>calls</h1>
  </div>
- <form name="callform" action="http://api.tropo.com/1.0/sessions?" target="_blank">
+<!-- <form name="callform" action="http://api.tropo.com/1.0/sessions?" target="_blank"> -->
+ <form name="callform" method="post">
  Call player:
- <select name="numberToCall">
+ <select name="user">
  {% for user in users%}
-  <option value="{{user.phone_num}}">{{user.name}}</option>
+  <option value="{{user.id}}">{{user.name}}</option>
  {% endfor %}
  </select>
  and play message:
- <select name ="messageToSay">
+ <select name ="message">
  {% for message in messages%}
-  <option value="{{message.content}}">{{message.name}}</option>
+  <option value="{{message.id}}">{{message.name}}</option>
  {% endfor %}
  </select>
- <input type="hidden" name="token" value="13acde1200cc5142acde42576458b5b7a48c638058a26304bdf34c476b11647b18c0da3b5ce13ceb7cb852a5">
- <input type="hidden" name="action" value="create">
   <input type="submit" value="CALL!">
  </form>
- </div>
+ 
+ <div>
+ <h3>Call log:</h3>
+ <div id="calls">
 
- {% endblock %}
+</div>
+</div> </div>
+
+{% endblock %}
+
+{%block javascript%}
+
+function updatePage() {	  
+	  $.get("/calls/", function(data) {
+		  //append data to list
+		  //alert("RETURNED:" + data);
+		  var items = [];
+		  var json = (jQuery.parseJSON(data));
+		  line = '';
+		  text = '';
+		  if (json!=null) {
+			  for (var i=0; i < json.length; i++) {
+				  var date = json[i].fields.date;
+				  var callee = json[i].fields.callee;
+				  var message = json[i].fields.message;
+				  var status = json[i].fields.status;
+				  
+				  line = '<div> Call to: <b>'+callee+'</b>, with message: <b>'+ message + '</b> at: '+ date + " Status: <b>";
+				  if (status == 0)
+				  	line = line + '<span style="color:orange">Waiting.</span>';
+				  else if (status == 1)
+				  	line = line + '<span style="color:green">Done!</span>';
+				  else if (status == -1)
+				  	line = line + '<span style="color:red">No Answer!</span>';
+			      else if (status == -2)
+				  	line = line + '<span style="color:red">Call failed!</span>';
+				  else if (status == -3)
+				  	line = line + '<span style="color:red">Call not made!</span>';
+				  line = line + '</b></div><br>';
+				  text = line + text;
+			  }
+			  //$("#checkins").html(items);
+			  document.getElementById('calls').innerHTML = text;
+		  }
+	  });
+	  
+	  var t = setTimeout("updatePage()", 500);
+}
+
+window.onload = updatePage;
+{% endblock %}
