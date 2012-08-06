@@ -37,6 +37,7 @@ function updatePage() {
 		  var location  = '';
 		  var reader = '';
 		  var reader_credit = '';
+		  var group_average = '';
 		  if (json!=null) {
 			  for (var i=0; i<json.length; i++) {
 				  if(i%2==0) {
@@ -46,6 +47,7 @@ function updatePage() {
 					  reader = json[i].fields.name;
 					  reader_credit = json[i].fields.reader_credit;
 					  user_credit = json[i].fields.user_credit;
+					  group_average = json[i].fields.group_average;
 					  new_checkin='<div class="well" style="background-color:#EEE" id="'+date+'"><p>';
 				  }
 				  else if (i%2==1) {
@@ -53,7 +55,7 @@ function updatePage() {
 					  var credit = json[i].fields.credit;
 					  var alias = json[i].fields.alias;
 					  var group = json[i].fields.group;
-					  new_checkin +='<strong>'+name+'</strong> (tag '+tag+' "'+alias+'", group '+group+') checked in at <strong>'+reader+ '</strong>('+location+') at: '+date+'. <strong>New credit: '+user_credit+'</strong>. Reader credit now: '+reader_credit+'.</p></div>';
+					  new_checkin +='<strong>'+name+'</strong> (tag '+tag+' "'+alias+'", group '+group+', group average: '+group_average+') checked in at <strong>'+reader+ '</strong>('+location+') at: '+date+'. <strong>New credit: '+user_credit+'</strong>. Reader credit now: '+reader_credit+'.</p></div>';
 					  items.push(new_checkin);
 				  }
 			  }
@@ -146,7 +148,7 @@ function animateFade(lastTick, eid)
        	{%for user in all_users%} 
        		{%if user.rfid = checkin.rfid%}
        <div class="well" style="background-color:#EEE">
-        <p><strong>{{user.name}}</strong> (tag {{checkin.rfid}} "{{user.alias}}", group {{user.group}}) checked in at <strong>{{checkin.name}}</strong>({{checkin.location}}) at {{checkin.checkin_date}}. <strong>New credit: {{checkin.user_credit}}</strong>. New reader credit: {{checkin.reader_credit}}.  
+        <p><strong>{{user.name}}</strong> (tag {{checkin.rfid}} "{{user.alias}}", group {{user.group}}, average: {{checkin.group_average|floatformat:1}}) checked in at <strong>{{checkin.name}}</strong>({{checkin.location}}) at {{checkin.checkin_date}}. <strong>New credit: {{checkin.user_credit}}</strong>. New reader credit: {{checkin.reader_credit}}.  
         </p>        
        </div>
        	{%endif%}
