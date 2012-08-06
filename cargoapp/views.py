@@ -3,26 +3,108 @@ from django.shortcuts import render_to_response
 from django.http import Http404
 from django.template import RequestContext
 from django.http import HttpRequest as request_post
-import urllib2, urllib, json, copy
+import urllib2, urllib, json, httplib, copy
 from datetime import *
 from django import forms
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
-from cargoapp.models import User, Checkin, Tag, Message
+from cargoapp.models import User, Checkin, Tag, Message, Call
 from django.core import serializers
 
 def index(request):
     values = {}
     return render_to_response('cargoapp/index.html', values, context_instance=RequestContext(request))
 
+@csrf_exempt 
 def calls(request):
     values = {}
     users = User.objects.all()
     messages = Message.objects.all()
     
     values = {'users':users, 'messages':messages}
-    return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request))
- 
+
+    if (request.method == "POST"):
+    	token = '13acde1200cc5142acde42576458b5b7a48c638058a26304bdf34c476b11647b18c0da3b5ce13ceb7cb852a5';
+    	user_id = request.POST.get("user");
+    	message_id = request.POST.get("message");
+    	
+    	user = User.objects.get(id=user_id);
+    	msg = Message.objects.get(id=message_id);
+    	
+    	call = Call(callee=user.name, message=msg.name);
+    	call.save();
+    	
+    	try:
+    		#conn = httplib.HTTPConnection('api.tropo.com');
+    		conn = httplib.HTTPConnection('128.243.20.248',3128);
+    		conn.request("GET", 'http://api.tropo.com/1.0/sessions?action=create&token='+token+'&numberToCall='+user.phone_num+'&messageToSay='+msg.content+'&call_id='+str(call.id));
+    	    
+    		if (conn.getresponse()):
+    			return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request));
+    		else:
+    			call.status = -3;
+    			call.save();
+    			return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request));
+    	except Exception as e:
+    		print e;
+    		call.status = -3;
+    		call.save();
+    		return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request));
+    	
+    if request.is_ajax():
+        update = []
+        #TODO: return non-displayed checkins.
+        count = 0;
+        try: 
+            all_calls = Call.objects.all()
+            for call in all_calls:
+                    update.append(call);
+                    #: convert to json
+                    count = count +1;
+            update = serializers.serialize("json", update);
+        except Exception as e:
+            print e
+        return HttpResponse(update)
+    else:
+
+		return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request))
+
+@csrf_exempt 
+def report_call_status(request):
+	call_id = request.POST.get('call_id');
+	call_status = request.POST.get('call_status');
+	
+	print 'Received call status update:'
+	print call_id
+	print call_status
+	
+	call = Call.objects.get(id=call_id);
+	call.status = call_status;
+	call.save();
+	
+	return HttpResponse('Done!');
+
+@csrf_exempt 
+def register_user_post(request):
+	tag_alias = request.POST.get('alias');
+	name = request.POST.get('name');
+	number = request.POST.get('number');
+	print('Modifying user: ' + name + '\n Number: ' + number + '\n Tag alias: ' + tag_alias);
+	
+	try:
+		tag = Tag.objects.get(alias=tag_alias);
+	except Exception as e:
+		# TODO: Inform user that tag is incorrect.
+		print('Warning, incorrect tag received.')
+		print e;
+		return HttpResponse('Tag not found');
+	else:
+		user = User.objects.get(rfid=tag.rfid);
+		user.phone_num= "+" + number;
+		user.name = name;
+		user.save();
+		return HttpResponse('Done!');
+
 def registration(request):
     error_msg = ''
     try:
