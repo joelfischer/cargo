@@ -61,9 +61,9 @@
   <h2>{{error_msg}}</h2>
  </div>
  {%else%}
- {%if user != 'None'%}
+ {%if username != 'None' and alias != 'None' %}
  <div class="alert alert-success">
- <h2>Successfully registered user {{user}}, with number: {{number}} to tag: {{alias}}</h2>
+ <h2>Successfully registered user {{username}}, with number: {{number}} to tag: {{alias}}</h2>
  </div>
  {%endif%}
  {%endif%}
