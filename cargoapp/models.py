@@ -18,7 +18,7 @@ class Checkin(models.Model):
     reader_credit = models.IntegerField(max_length=10)
     user_credit = models.IntegerField(max_length=10)
     checkin_date = models.DateTimeField(auto_now_add=True)
-    displayed = models.BooleanField()
+    group_average = models.FloatField(max_length=10)
     def __unicode__(self):
         return unicode(self.checkin_date)
     

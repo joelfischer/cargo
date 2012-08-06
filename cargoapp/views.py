@@ -204,12 +204,14 @@ def checkin(request):
                 print e
             if tagId is not '':  
                 user, user_credit, error = addOrSubtract(tagId, credit, is_addition)
+                group_average, error_msg = getGroupAverage(user)
+                print group_average
                 if error is not '':
                     print 'Check in with unassigned tag'
                 else:
-                    print 'User "'+ user +'" checked in, new credit: '+ str(user_credit)  
+                    print 'User "'+ user.name +'" checked in, new credit: '+ str(user_credit)  
                                
-                c = Checkin (location = readerId, rfid = tagId, name=name, reader_credit = reader_credit, user_credit = user_credit)
+                c = Checkin (location = readerId, rfid = tagId, name=name, reader_credit = reader_credit, user_credit = user_credit, group_average = group_average)
                 c.save()   
                 
                 all_checkins = Checkin.objects.order_by('checkin_date')
@@ -223,15 +225,10 @@ def checkin(request):
                 print("|-----------------------|")
                 
             else:
-                #this is a browser request, flag as displayed
                 all_checkins = Checkin.objects.order_by('checkin_date')
                 all_checkins = all_checkins.reverse()
                 print all_checkins
                 all_users = User.objects.all()
-#                for checkin in all_checkins:
-#                    checkin.displayed = True
-#                    checkin.save()
-    
         except Exception as e:                       
             error_msg = str(e)
             print error_msg
@@ -240,20 +237,34 @@ def checkin(request):
 
 def addOrSubtract(tagId, credit, is_addition):
     error_msg = ''
-    user = ''
     print credit
     try:
-        u = User.objects.get(rfid = tagId)
-        user = u.name
+        user = User.objects.get(rfid = tagId)
         if is_addition:
-            u.credit += credit
+            user.credit += credit
         else:
-            u.credit -= credit
-        u.save()
-        credit = u.credit
+            user.credit -= credit
+        user.save()
+        credit = user.credit
     except Exception as e:
         error_msg = e
     return user, credit, error_msg
+
+def getGroupAverage(user):
+    group = user.group
+    average_credit = 0.0
+    error_msg = ''
+    try: 
+        group_users = User.objects.filter(group = group)
+        num_users = 0
+        group_credit = 0
+        for user in group_users:
+            num_users += 1.0
+            group_credit += user.credit
+        average_credit = group_credit/num_users
+    except Exception as e:
+        error_msg = e
+    return average_credit, error_msg
 
 @csrf_exempt 
 def setup(request):
