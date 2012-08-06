@@ -14,25 +14,70 @@
  
  <div>
  <h2>Associate a user with an rfid tag</h2>
- <form class="well" action="/handle_registration/" method="post"> {% csrf_token %}
+ <form class="well" action="/cargo/registration/" method="post"> {% csrf_token %}
   <div>
   <label>user name</label>
-  <input type="text" id="user_name" class="span3" placeholder="user name">
+  <input type="text" id="user_name" name="user_name" {%if error_msg != ''%} value="{{user}}" {%endif%} class="span3" placeholder="user name">
    <label>phone number</label>
-  <input type="text" id="number" class="span3" placeholder="phone number">
+  <input type="text" id="number" name="number" {%if error_msg != ''%} value="{{number}}" {%endif%} class="span3" placeholder="phone number">
    <label>rfid alias</label>
-  <input type="text" id="alias" class="span3" placeholder="alias">
+ 
+  {%if tags|length > 0%}
+  <select name="alias">
+  {%for tag in tags%}
+  <option value="{{tag.alias}}">{{tag.alias}}</option>
+  {%endfor%}
+  </select>
+  {%else%}
+  <div class="alert alert-info">
+  <h4>No (more) unassigned tags. <a href="/cargo/setup/">Set up tags</a> to register more players.</h4>
+ </div>
+  {%endif%}
+  
+  <!--  <input type="text" id="alias" name="alias" {%if error_msg != ''%} value="{{alias}}" {%endif%} class="span3" placeholder="alias">-->
   <span class="help-block">The alias defined when setting up the rfid tags.</span>
+  <label>assign to group</label>
+  <select name="group">
+  <option value="none">none</option>
+  <option value="1">group 1</option>
+  <option value="2">group 2</option>
+  <option value="3">group 3</option>
+  <option value="4">group 4</option>
+  <option value="5">group 5</option>
+  <option value="6">group 6</option>
+  <option value="7">group 7</option>
+  <option value="8">group 8</option>
+  <option value="9">group 9</option>
+  <option value="10">group 10</option>
+ </select>
+ <span class="help-block">optional.</span>
   </div>
   <button type="submit" class="btn btn-primary btn-large">Save</button>
 </form>
  </div>
  
- {%if response%}
- <div>
- {{response}}
+ {%if error_msg != ''%}
+ <div class="alert alert-error">
+  <h2>{{error_msg}}</h2>
+ </div>
+ {%else%}
+ {%if user != 'None'%}
+ <div class="alert alert-success">
+ <h2>Successfully registered user {{user}}, with number: {{number}} to tag: {{alias}}</h2>
  </div>
  {%endif%}
+ {%endif%}
+ 
+ <div>
+ <h2>Registered users</h2>
+ {%if all_users|length > 0%}
+ {%for user in all_users%}
+ <h3>User: {{user.name}}, number: {{user.phone_num}}, assigned tag: {{user.alias}} ({{user.rfid}})</h3>
+ {%endfor%}
+ {%else%}
+ <h3>No users registered yet.</h3>
+ {%endif%}
+ </div>
  
 </div>
 

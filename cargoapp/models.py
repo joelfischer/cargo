@@ -6,12 +6,17 @@ class User(models.Model):
     group = models.CharField(max_length=30)
     alias = models.CharField(max_length=30)
     rfid = models.CharField(max_length=200)
+    is_cargo = models.BooleanField() 
+    credit = models.IntegerField(max_length=10)
     def __unicode__(self):
         return self.name
 
 class Checkin(models.Model):
     location = models.CharField(max_length=200)
+    name = models.CharField(max_length=30)
     rfid = models.CharField(max_length=200)
+    reader_credit = models.IntegerField(max_length=10)
+    user_credit = models.IntegerField(max_length=10)
     checkin_date = models.DateTimeField(auto_now_add=True)
     displayed = models.BooleanField()
     def __unicode__(self):
@@ -37,3 +42,11 @@ class Call(models.Model):
 	status = models.IntegerField(default=0)
 	def __unicode__(self):
 		return unicode(self.id)   
+  
+
+class Extra(models.Model):
+    for_user = models.CharField(max_length=15)
+    description = models.CharField(max_length=30)
+    def __unicode__(self):
+        return self.description
+    

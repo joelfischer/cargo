@@ -2,7 +2,7 @@
 db/sqlite.db
 .project
 .pydevproject
-
+settings.py
 db/.DS_Store
 
 cargoapp/static/.DS_Store
@@ -12,7 +12,3 @@ cargoapp/templates/.DS_Store
 cargoapp/.DS_Store
 
 .DS_Store
-
-settings.py
-
-settings.py

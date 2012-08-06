@@ -25,7 +25,7 @@ function listenForTags() {
 	//  }
 	//  test = test+1;
 		  
-	  $.get("/setup/", function(data) {
+	  $.get("/cargo/setup/", function(data) {
 		  //append data to list
 		  
 		  var test = data;
@@ -56,12 +56,12 @@ function listenForTags() {
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
-          <a class="brand" href="/index">cargo</a>
+          <a class="brand" href="/cargo/index">cargo</a>
           <ul class="nav">
-            <li><a href="/checkin">Check-ins</a></li>  
-            <li><a href="/calls">Calls</a></li>  
-            <li><a href="/registration">Registration</a></li>  
-            <li><a href="/setup">Set up tags</a></li>  
+            <li><a href="/cargo/checkin">Check-ins</a></li>  
+            <li><a href="/cargo/calls">Calls</a></li>  
+            <li><a href="/cargo/registration">Registration</a></li>  
+            <li><a href="/cargo/setup">Set up tags</a></li>  
           </ul>
           <ul class="nav pull-right">
             <li class="divider-vertical"></li>            
@@ -69,9 +69,9 @@ function listenForTags() {
          	{%if user.is_authenticated %}
            	 <li><a href="#">Logged in as {{user}}</a></li>
            	 <li class="divider-vertical"></li>
-           	 <li><a href="./logout">Log out</a></li>
+           	 <li><a href="/cargo/logout">Log out</a></li>
           	{%else%}
-          	<li><a href="./login">Sign up | Log in</a></li>
+          	<li><a href="/cargo/login">Sign up | Log in</a></li>
           	{%endif%} 
           {%endif%}
           </ul>
@@ -87,10 +87,10 @@ function listenForTags() {
 	 <h1>define tags</h1>
 	</div>
 	<div>
-	<h2>Set up a new tag</h2>
+	<h2>Set up a new tag <small> You need the set up reader to do this.</small></h2>
 		<div id="tagFormDiv" style="display: none">
 		 <p>Assign a unique alias for tag <div id="tagIdDiv"></div> </p>
-		 <form class="well" name="tagForm" id="tagForm" align="left" action="/setup/" method="post"> 
+		 <form class="well" name="tagForm" id="tagForm" align="left" action="/cargo/setup/" method="post"> 
 		  {% csrf_token %}
 		  <div class="clearfix">
 		   <label for="user">alias</label> 
