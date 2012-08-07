@@ -35,16 +35,24 @@ def calls(request):
     	call.save();
     	
     	try:
-    		conn = httplib.HTTPConnection('api.tropo.com');
-    		#conn = httplib.HTTPConnection('128.243.20.248',3128);
-    		conn.request("GET", 'http://www.api.tropo.com/1.0/sessions?action=create&token='+token+'&numberToCall='+user.phone_num+'&messageToSay='+msg.content+'&call_id='+str(call.id));
-    	    
-    		if (conn.getresponse()):
-    			return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request));
-    		else:
-    			call.status = -3;
-    			call.save();
-    			return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request));
+            #params = urllib.urlencode({'token':token, 'numberToCall':user.phone_num, 'messageToSay':msg.content, 'call_id':str(call.id) })
+            #conn = httplib.HTTPConnection('api.tropo.com');
+    		#conn = httplib.HTTPConnection('128.243.20.248',3128);            
+            #working code!!!
+            #conn.request("GET", 'http://api.tropo.com/1.0/sessions?action=create');
+            url = 'http://api.tropo.com/1.0/sessions?action=create&token='+ token 
+            page = urllib.urlopen(url)
+            response = page.read()
+            
+            print response
+            return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request));
+            
+            #if (conn.getresponse()):
+    		
+            #else:
+    		#	call.status = -3;
+    		#	call.save();
+    		#	return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request));
     	except Exception as e:
     		print e;
     		call.status = -3;
@@ -121,6 +129,10 @@ def registration(request):
         if alias is '':
             error_msg += '- Missing alias -'
         group = str(post_dic.get('group'))
+        if str(post_dic.get('is_cargo'))=='True':
+            is_cargo = True
+        else:
+            is_cargo = False
         if user != 'None' and user is not '' and number is not '' and alias is not '':
             #check whether alias exists
             try:
@@ -136,7 +148,7 @@ def registration(request):
             except Exception as e:
                 print e
                 #ok, create a new user
-                u = User (name = user, phone_num = number, alias = alias, rfid = rfid, credit = 0, group = group)
+                u = User (name = user, phone_num = number, alias = alias, rfid = rfid, credit = 0, group = group, is_cargo = is_cargo)
                 u.save()
                 print 'created new player: '+user
     except Exception as e:

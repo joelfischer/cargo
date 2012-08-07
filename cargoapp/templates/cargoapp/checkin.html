@@ -6,6 +6,9 @@
 
 <link rel="stylesheet" href="{{STATIC_URL}}css/bootstrap.css">
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery-latest.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.tablesorter.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap-twipsy.js"></script>
 <style type="text/css">
  body {
        background-color: #20502F;
@@ -99,6 +102,37 @@ function animateFade(lastTick, eid)
   setTimeout("animateFade(" + curTick + ",'" + eid + "')", 33);
 }
 
+
+$(function() {
+	$("table#checkinTable").tablesorter({ 
+		//sortList: [[1,0]],
+		// extract data from markup and return it  
+		textExtraction: function(node) { 
+			id = node.id;
+			toSort = '';
+			if (id == 'group_col') {
+				 toSort = node.childNodes[0].firstChild.innerHTML;
+			}
+			if (id == 'player_col') {
+				 toSort = node.childNodes[0].firstChild.innerHTML;
+			}
+			if (id == 'credit_col') {
+				 toSort = node.childNodes[0].firstElementChild.innerHTML;		
+				// toSort = toSort.substring(15).trim();
+			}
+			if (id == 'group_avg_col') {
+				 toSort = node.childNodes[0].firstElementChild.innerHTML;		
+				// toSort = toSort.substring(15).trim();
+			}
+			if (id == 'shift_col') {
+				 toSort = node.childNodes[0].firstElementChild.innerHTML;		
+				// toSort = toSort.substring(2).trim();
+			}
+            return toSort; 
+        }
+	})
+});
+
 </script>
 
 </head>
@@ -157,8 +191,38 @@ function animateFade(lastTick, eid)
        {%else%}
         <div><h2>Watch this space for check ins.</h2></div>
        {%endif%}
- 
- 	  </div>
+ 	  
+ 	  <table class="table table-striped" id="checkinTable">
+   		<thead>
+    	<tr> 
+     		<th><a rel='twipsy' title='Click to sort by group'><div><h3>Group</h3></div></a></th>
+     		<th><a rel='twipsy' title='Click to sort by player'><div><h3>Player</h3></div></a></th>
+     		<th><a rel='twipsy' title='Click to sort by credit'><div><h3>Credit</h3></div></a></th>
+     		<th><a rel='twipsy' title='Click to sort by group average'><div><h3>Group average</h3></div></a></th>
+     		<th><a rel='twipsy' title='Click to sort by location'><div><h3>Location</h3></div></a></th>
+     		<th><a rel='twipsy' title='Click to sort by time'><div><h3>Time</h3></div></a></th>
+    	</tr>
+   		</thead>
+   		<tbody>
+   		{%for checkin in all_checkins%}
+   			{%for user in all_users%}
+   				{%if user.rfid = checkin.rfid%}
+   		<tr>
+   			<td id="group_col"><div><h5>{{user.group}}</h5></div></td>
+   			<td id="player_col"><div><h5>{{user.name}} ({{user.alias}})</h5></div></td>
+   			<td id="credit_col"><div><h5>{{checkin.user_credit}}</h5></div></td>
+   			<td id="group_avg_col"><div><h5>{{checkin.group_average|floatformat:1}}</h5></div></td>
+   			<td id="location_col"><div><h5>{{checkin.name}} (Reader credit left: {{checkin.reader_credit}})</h5></div></td>
+   			<td id="date_col"><div><h5>{{checkin.checkin_date}}</h5></div></td>
+   		</tr>
+   		  		{%endif%}
+   		  	{%endfor%}
+   		 {%endfor%}
+   		</tbody>
+   		</table>
+ 	  
+ 	  
+ 	   </div>
  	 </div>
 		
 		
