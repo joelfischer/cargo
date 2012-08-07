@@ -10,6 +10,7 @@ from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from cargoapp.models import User, Checkin, Tag, Message, Call
 from django.core import serializers
+from string import Template
 
 def index(request):
     values = {}
@@ -30,6 +31,8 @@ def calls(request):
     	
     	user = User.objects.get(id=user_id);
     	msg = Message.objects.get(id=message_id);
+    	
+    	msg.content = parse_message(msg, user);
     	
     	call = Call(callee=user.name, message=msg.name);
     	call.save();
@@ -76,6 +79,14 @@ def calls(request):
     else:
 
 		return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request))
+
+def parse_message(message, user):
+	msg = message.content
+	dict = {'name':user.name, 'group':user.group, 'points':user.credit}
+	
+	msg = Template(message.content).safe_substitute(dict)
+	
+	return msg
 
 @csrf_exempt 
 def report_call_status(request):
