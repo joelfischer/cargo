@@ -10,12 +10,12 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^checkin/$', 'cargoapp.views.checkin'),
-    url(r'^calls/$', 'cargoapp.views.calls'),
-    url(r'^registration/$', 'cargoapp.views.registration'),
-    url(r'^index/$', 'cargoapp.views.index'),
-    url(r'^setup/$', 'cargoapp.views.setup'),
-    url(r'^$', 'cargoapp.views.index'),
+    #url(r'^checkin/$', 'cargoapp.views.checkin'),
+    #url(r'^calls/$', 'cargoapp.views.calls'),
+    #url(r'^registration/$', 'cargoapp.views.registration'),
+    #url(r'^index/$', 'cargoapp.views.index'),
+    #url(r'^setup/$', 'cargoapp.views.setup'),
+    #url(r'^$', 'cargoapp.views.index'),
     url(r'^cargo/checkin/$', 'cargoapp.views.checkin'),
     url(r'^cargo/calls/$', 'cargoapp.views.calls'),
     url(r'^cargo/registration/$', 'cargoapp.views.registration'),

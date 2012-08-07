@@ -1,8 +1,8 @@
 # Django settings for cargo project.
 import os
 
-DEBUG = False
-TEMPLATE_DEBUG = False
+DEBUG = True
+TEMPLATE_DEBUG = True
 ROOT_PATH = os.path.dirname(__file__)
 
 ADMINS = (
@@ -16,8 +16,8 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '/var/www/cargo/cargo/db/sqlite.db',                       # Or path to database file if using sqlite3.
-        #'NAME': '/Users/Khaled/Documents/workspace/cargo/db/sqlite.db',                      # Or path to database file if using sqlite3.
+        #'NAME': '/var/www/cargo/cargo/db/sqlite.db',                       # Or path to database file if using sqlite3.
+        'NAME': '/Users/Khaled/Documents/workspace/cargo/db/sqlite.db',                      # Or path to database file if using sqlite3.
         #'NAME': '/Users/dschoul2/Dev/cargo/db/sqlite.db',                     
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
@@ -106,7 +106,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-ROOT_URLCONF = 'cargo.apache.urls_production'
+ROOT_URLCONF = 'cargo.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".

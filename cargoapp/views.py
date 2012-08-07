@@ -40,7 +40,7 @@ def calls(request):
     		#conn = httplib.HTTPConnection('128.243.20.248',3128);            
             #working code!!!
             #conn.request("GET", 'http://api.tropo.com/1.0/sessions?action=create');
-            url = 'http://api.tropo.com/1.0/sessions?action=create&token='+ token 
+            url = 'http://api.tropo.com/1.0/sessions?action=create&token='+ token + '&numberToCall=' + user.phone_num + '&messageToSay=' + msg.content + '&call_id' + str(call.id)
             page = urllib.urlopen(url)
             response = page.read()
             
