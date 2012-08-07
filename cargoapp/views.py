@@ -35,22 +35,25 @@ def calls(request):
     	call.save();
     	
     	try:
-            params = urllib.urlencode({'token':token, 'numberToCall':user.phone_num, 'messageToSay':msg.content, 'call_id':str(call.id) })
-            conn = httplib.HTTPConnection('api.tropo.com');
+            #params = urllib.urlencode({'token':token, 'numberToCall':user.phone_num, 'messageToSay':msg.content, 'call_id':str(call.id) })
+            #conn = httplib.HTTPConnection('api.tropo.com');
     		#conn = httplib.HTTPConnection('128.243.20.248',3128);
             
             #working code!!!
-            conn.request("GET", 'http://api.tropo.com/1.0/sessions?action=create');
+            #conn.request("GET", 'http://api.tropo.com/1.0/sessions?action=create');
             url = 'http://api.tropo.com/1.0/sessions?action=create&token='+ token 
             page = urllib.urlopen(url)
             response = page.read()
             
-            if (conn.getresponse()):
-    			return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request));
-            else:
-    			call.status = -3;
-    			call.save();
-    			return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request));
+            print response
+            return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request));
+            
+            #if (conn.getresponse()):
+    		
+            #else:
+    		#	call.status = -3;
+    		#	call.save();
+    		#	return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request));
     	except Exception as e:
     		print e;
     		call.status = -3;

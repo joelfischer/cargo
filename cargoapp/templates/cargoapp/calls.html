@@ -55,9 +55,9 @@ function updatePage() {
 				  var status = json[i].fields.status;
 				  
 				  line = '<div> Call to: <b>'+callee+'</b>, with message: <b>'+ message + '</b> at: '+ date + " Status: <b>";
-				  if (status == 0)
+				  if (status == 1)
 				  	line = line + '<span style="color:orange">Waiting.</span>';
-				  else if (status == 1)
+				  else if (status == 0)
 				  	line = line + '<span style="color:green">Done!</span>';
 				  else if (status == -1)
 				  	line = line + '<span style="color:red">No Answer!</span>';
