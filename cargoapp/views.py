@@ -37,7 +37,7 @@ def calls(request):
     	try:
     		conn = httplib.HTTPConnection('api.tropo.com');
     		#conn = httplib.HTTPConnection('128.243.20.248',3128);
-    		conn.request("GET", 'http://api.tropo.com/1.0/sessions?action=create&token='+token+'&numberToCall='+user.phone_num+'&messageToSay='+msg.content+'&call_id='+str(call.id));
+    		conn.request("GET", 'http://www.api.tropo.com/1.0/sessions?action=create&token='+token+'&numberToCall='+user.phone_num+'&messageToSay='+msg.content+'&call_id='+str(call.id));
     	    
     		if (conn.getresponse()):
     			return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request));
