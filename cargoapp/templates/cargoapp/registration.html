@@ -20,6 +20,7 @@
   <input type="text" id="user_name" name="user_name" {%if error_msg != ''%} value="{{username}}" {%endif%} class="span3" placeholder="user name">
    <label>phone number</label>
   <input type="text" id="number" name="number" {%if error_msg != ''%} value="{{number}}" {%endif%} class="span3" placeholder="phone number">
+   
    <label>rfid alias</label>
  
   {%if tags|length > 0%}
@@ -36,6 +37,7 @@
   
   <!--  <input type="text" id="alias" name="alias" {%if error_msg != ''%} value="{{alias}}" {%endif%} class="span3" placeholder="alias">-->
   <span class="help-block">The alias defined when setting up the rfid tags.</span>
+  
   <label>assign to group</label>
   <select name="group">
   <option value="none">none</option>
@@ -52,6 +54,15 @@
  </select>
  <span class="help-block">optional.</span>
   </div>
+  
+  <label>make this player cargo?</label>
+  <select name="is_cargo">
+  <option value="False">No</option>
+  <option value="True">Yes</option>
+  </select>
+  
+  </br>
+  
   <button type="submit" class="btn btn-primary btn-large">Save</button>
 </form>
  </div>
