@@ -13,6 +13,49 @@
  body {
        background-color: #20502F;
   }
+  
+table
+.header:after {
+	border-top-width: 0px;
+	border-right-width: 6px;
+	border-left-width: 6px;
+	border-bottom-width: 8px;
+	visibility: visible;
+	opacity: 0.3;
+}
+th.headerSortUp { 
+		    background-color: #F5F5F5; 
+}
+table
+.headerSortUp:after {
+	border-left-width: 6px;
+	border-right-width: 6px;
+	border-top-width: 8px;
+	opacity: 1.0;
+	-khtml-opacity: 1.0;
+}
+table
+.headerSortDown { 
+		    background-color: #F5F5F5; 
+		    opacity: 1.0;
+		}
+
+table
+.headerSortDown:after { 
+		    background-color: #F5F5F5; 
+		    opacity: 1.0;
+		    -khtml-opacity: 1.0;
+		}
+table
+.headerSortDown:hover:after { 
+		    background-color: #F5F5F5; 
+		    opacity: 1.0;
+		    -khtml-opacity: 1.0;
+}
+table 
+.header:hover:after {
+	opacity: 1.0;	
+}
 </style>
 <script type="text/javascript" >
 function clearField(id)
@@ -103,6 +146,7 @@ function animateFade(lastTick, eid)
 }
 
 
+
 $(function() {
 	$("table#checkinTable").tablesorter({ 
 		//sortList: [[1,0]],
@@ -124,7 +168,15 @@ $(function() {
 				 toSort = node.childNodes[0].firstElementChild.innerHTML;		
 				// toSort = toSort.substring(15).trim();
 			}
-			if (id == 'shift_col') {
+			if (id == 'location_col') {
+				 toSort = node.childNodes[0].firstElementChild.innerHTML;		
+				// toSort = toSort.substring(2).trim();
+			}
+			if (id == 'reader_credit_col') {
+				 toSort = node.childNodes[0].firstElementChild.innerHTML;		
+				// toSort = toSort.substring(2).trim();
+			}
+			if (id == 'date_col') {
 				 toSort = node.childNodes[0].firstElementChild.innerHTML;		
 				// toSort = toSort.substring(2).trim();
 			}
@@ -175,7 +227,7 @@ $(function() {
  	   <div id="checkins">
  	   </div>
        
-       <!-- load data passed in from view -->
+       <!-- load data passed in from view 
        {%if all_checkins%}
       
        {%for checkin in all_checkins%}
@@ -191,6 +243,7 @@ $(function() {
        {%else%}
         <div><h2>Watch this space for check ins.</h2></div>
        {%endif%}
+       -->
  	  
  	  <table class="table table-striped" id="checkinTable">
    		<thead>
@@ -200,6 +253,7 @@ $(function() {
      		<th><a rel='twipsy' title='Click to sort by credit'><div><h3>Credit</h3></div></a></th>
      		<th><a rel='twipsy' title='Click to sort by group average'><div><h3>Group average</h3></div></a></th>
      		<th><a rel='twipsy' title='Click to sort by location'><div><h3>Location</h3></div></a></th>
+     		<th><a rel='twipsy' title='Click to sort by reader credit left'><div><h3>Reader credit</h3></div></a></th>
      		<th><a rel='twipsy' title='Click to sort by time'><div><h3>Time</h3></div></a></th>
     	</tr>
    		</thead>
@@ -208,12 +262,13 @@ $(function() {
    			{%for user in all_users%}
    				{%if user.rfid = checkin.rfid%}
    		<tr>
-   			<td id="group_col"><div><h5>{{user.group}}</h5></div></td>
-   			<td id="player_col"><div><h5>{{user.name}} ({{user.alias}})</h5></div></td>
-   			<td id="credit_col"><div><h5>{{checkin.user_credit}}</h5></div></td>
-   			<td id="group_avg_col"><div><h5>{{checkin.group_average|floatformat:1}}</h5></div></td>
-   			<td id="location_col"><div><h5>{{checkin.name}} (Reader credit left: {{checkin.reader_credit}})</h5></div></td>
-   			<td id="date_col"><div><h5>{{checkin.checkin_date}}</h5></div></td>
+   			<td id="group_col"><div><h4>{{user.group}}</h4></div></td>
+   			<td id="player_col"><div><h4>{{user.name}} ({{user.alias}})</h4></div></td>
+   			<td id="credit_col"><div><h4>{{checkin.user_credit}}</h4></div></td>
+   			<td id="group_avg_col"><div><h4>{{checkin.group_average|floatformat:1}}</h4></div></td>
+   			<td id="location_col"><div><h4>{{checkin.name}}</h4></div></td>
+   			<td id="reader_credit_col"><div><h4>{{checkin.reader_credit}}</h4></div></td>
+   			<td id="date_col"><div><h4>{{checkin.checkin_date}}</h4></div></td>
    		</tr>
    		  		{%endif%}
    		  	{%endfor%}
