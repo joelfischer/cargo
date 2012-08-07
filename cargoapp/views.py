@@ -226,7 +226,7 @@ def checkin(request):
             except Exception as e:
                 print e
             if tagId is not '':  
-                user, user_credit, error = addOrSubtract(tagId, credit, is_addition)
+                user, user_credit, error = addOrSubtract(tagId, credit, is_addition, reader_credit)
                 group_average, error_msg = getGroupAverage(user)
                 print group_average
                 if error is not '':
@@ -258,7 +258,7 @@ def checkin(request):
         return render_to_response('cargoapp/checkin.html', {'all_checkins': all_checkins, 'all_users': all_users},
                                    context_instance=RequestContext(request))
 
-def addOrSubtract(tagId, credit, is_addition):
+def addOrSubtract(tagId, credit, is_addition, reader_credit):
     error_msg = ''
     print credit
     try:
@@ -267,6 +267,9 @@ def addOrSubtract(tagId, credit, is_addition):
             user.credit += credit
         else:
             user.credit -= credit
+        #RESET user credit if credit is 0
+        if reader_credit == 0:
+            user.credit = 0
         user.save()
         credit = user.credit
     except Exception as e:
