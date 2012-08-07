@@ -3,9 +3,9 @@ from django.db import models
 class User(models.Model):
     name = models.CharField(max_length=15)
     phone_num = models.CharField(max_length=30)
-    group = models.CharField(max_length=30)
+    group = models.CharField(max_length=30, choices=[('1', '1'), ('2', '2') , ('3', '3'), ('4', '4'), ('5', '5'), ('6', '6'), ('7', '7'), ('8', '8'), ('9', '9'), ('10', '10')])
     alias = models.CharField(max_length=30)
-    rfid = models.CharField(max_length=200)
+    rfid = models.CharField(max_length=200, editable=False)
     is_cargo = models.BooleanField() 
     credit = models.IntegerField(max_length=10)
     def __unicode__(self):
@@ -23,7 +23,7 @@ class Checkin(models.Model):
         return unicode(self.checkin_date)
     
 class Tag(models.Model):
-    rfid = models.CharField(max_length=200, unique = True)
+    rfid = models.CharField(max_length=200, unique = True, editable=False)
     alias = models.CharField(max_length=200, unique = True)
     assigned = models.BooleanField()    
     def __unicode__(self):
