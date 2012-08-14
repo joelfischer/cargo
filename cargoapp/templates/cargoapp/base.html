@@ -20,6 +20,27 @@ function clearField(id)
 {
 	document.getElementById(id).value='';
 }
+
+$(function() {
+	$("table#playersTable").tablesorter({ 
+		//sortList: [[1,0]],
+		// extract data from markup and return it  
+		textExtraction: function(node) { 
+			id = node.id;
+			toSort = '';
+			if (id == 'player_col') {
+				 toSort = node.childNodes[0].firstChild.innerHTML;
+			}
+			if (id == 'group_col') {
+				 toSort = node.childNodes[0].firstChild.innerHTML;
+			}
+			if (id == 'credit_col') {
+				 toSort = node.childNodes[0].firstElementChild.innerHTML;		
+			}
+            return toSort; 
+        }
+	})
+});
 {%block javascript%}
 {% endblock %}
 </script>
@@ -35,7 +56,8 @@ function clearField(id)
             <li><a href="/cargo/checkin">Check-ins</a></li>  
             <li><a href="/cargo/calls">Calls</a></li>  
             <li><a href="/cargo/registration">Registration</a></li>  
-            <li><a href="/cargo/setup">Set up tags</a></li>  
+            <li><a href="/cargo/setup">Set up tags</a></li> 
+            <li><a href="/cargo/players">Players</a></li>	
           </ul>
           <ul class="nav pull-right">
             <li class="divider-vertical"></li>            

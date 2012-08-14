@@ -361,3 +361,8 @@ def setup(request):
         return render_to_response('cargoapp/define_tag.html', {'all_tags': all_tags},
                                    context_instance=RequestContext(request))
         
+def view_players(request):
+    all_players = User.objects.all()
+    return render_to_response('cargoapp/players.html', {'all_players': all_players},
+                                   context_instance=RequestContext(request))
+        
