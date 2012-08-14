@@ -8,7 +8,7 @@ from datetime import *
 from django import forms
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
-from cargoapp.models import User, Checkin, Tag, Message, Call
+from cargoapp.models import User, Checkin, Tag, Message, Call, Location
 from django.core import serializers
 from string import Template
 
@@ -237,6 +237,14 @@ def checkin(request):
                 c = Checkin (location = readerId, rfid = tagId, name=name, reader_credit = reader_credit, user_credit = user_credit, group_average = group_average)
                 c.save()   
                 
+                try:
+                    reader = Location.objects.get(reader_id=readerId)
+                    reader.credit = reader_credit
+                    reader.save()
+                except Exception as e:
+                    error_msg += str(e)
+                    print error_msg
+                
                 all_checkins = Checkin.objects.order_by('checkin_date')
                 all_checkins.reverse()
                 all_users = User.objects.all()    
@@ -253,7 +261,7 @@ def checkin(request):
                 print all_checkins
                 all_users = User.objects.all()
         except Exception as e:                       
-            error_msg = str(e)
+            error_msg += str(e)
             print error_msg
         return render_to_response('cargoapp/checkin.html', {'all_checkins': all_checkins, 'all_users': all_users},
                                    context_instance=RequestContext(request))
@@ -364,5 +372,10 @@ def setup(request):
 def view_players(request):
     all_players = User.objects.all()
     return render_to_response('cargoapp/players.html', {'all_players': all_players},
+                                   context_instance=RequestContext(request))
+    
+def view_locations(request):
+    all_locations = Location.objects.all()
+    return render_to_response('cargoapp/locations.html', {'all_locations': all_locations},
                                    context_instance=RequestContext(request))
         

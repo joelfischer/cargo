@@ -1,4 +1,4 @@
-from cargoapp.models import User, Tag, Message, Call, Checkin
+from cargoapp.models import User, Tag, Message, Call, Checkin, Location
 
 from django.contrib import admin
 
@@ -7,3 +7,4 @@ admin.site.register(Message)
 admin.site.register(Tag)
 admin.site.register(Call)
 admin.site.register(Checkin)
+admin.site.register(Location)

@@ -10,6 +10,13 @@ class User(models.Model):
     credit = models.IntegerField(max_length=10)
     def __unicode__(self):
         return self.name
+    
+class Location(models.Model):
+    reader_id = models.CharField(max_length=30, unique=True)
+    name = models.CharField(max_length=30)
+    credit = models.IntegerField(max_length=10)
+    def __unicode__(self):
+        return self.name
 
 class Checkin(models.Model):
     location = models.CharField(max_length=200)
