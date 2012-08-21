@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     url(r'^registration/$', 'cargoapp.views.registration'),
     url(r'^index/$', 'cargoapp.views.index'),
     url(r'^setup/$', 'cargoapp.views.setup'),
+	url(r'^report_call_status/$', 'cargoapp.views.report_call_status'),
     url(r'^$', 'cargoapp.views.index'),
     # url(r'^cargoapp/', include('cargoapp.foo.urls')),
 
