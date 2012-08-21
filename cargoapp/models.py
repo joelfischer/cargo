@@ -8,6 +8,7 @@ class User(models.Model):
     rfid = models.CharField(max_length=200, editable=False)
     is_cargo = models.BooleanField() 
     credit = models.IntegerField(max_length=10)
+    goto_location = models.CharField(max_length=30)
     def __unicode__(self):
         return self.name
     
@@ -37,7 +38,7 @@ class Tag(models.Model):
         return self.rfid
     
 class Message(models.Model):
-	name = models.CharField(max_length=200)
+	name = models.CharField(max_length=200, unique = True)
 	content = models.TextField()
 	def __unicode__(self):
 		return unicode(self.name)    
@@ -52,8 +53,9 @@ class Call(models.Model):
   
 
 class Extra(models.Model):
-    for_user = models.CharField(max_length=15)
-    description = models.CharField(max_length=30)
+    for_object_id = models.CharField(max_length=30)
+    name = models.CharField(max_length=30)
+    value = models.CharField(max_length=100)
     def __unicode__(self):
         return self.description
     

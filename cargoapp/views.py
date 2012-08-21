@@ -3,7 +3,7 @@ from django.shortcuts import render_to_response
 from django.http import Http404
 from django.template import RequestContext
 from django.http import HttpRequest as request_post
-import urllib2, urllib, json, httplib, copy
+import urllib2, urllib, json, httplib, copy, random
 from datetime import *
 from django import forms
 from django.shortcuts import render_to_response
@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from cargoapp.models import User, Checkin, Tag, Message, Call, Location
 from django.core import serializers
 from string import Template
+from automation.automation import determineSwipeSideConditions, selectAppropriateRules
 
 def index(request):
     values = {}
@@ -226,7 +227,7 @@ def checkin(request):
             except Exception as e:
                 print e
             if tagId is not '':  
-                user, user_credit, error = addOrSubtract(tagId, credit, is_addition, reader_credit)
+                user, user_credit, error, lostPoints = addOrSubtract(tagId, credit, is_addition, reader_credit)
                 group_average, error_msg = getGroupAverage(user)
                 print group_average
                 if error is not '':
@@ -244,6 +245,10 @@ def checkin(request):
                 except Exception as e:
                     error_msg += str(e)
                     print error_msg
+                
+                if reader is not None:
+                    determineSwipeSideConditions(user, group_average, lostPoints, c, reader)
+                    
                 
                 all_checkins = Checkin.objects.order_by('checkin_date')
                 all_checkins.reverse()
@@ -268,6 +273,7 @@ def checkin(request):
 
 def addOrSubtract(tagId, credit, is_addition, reader_credit):
     error_msg = ''
+    lostPoints = False
     print credit
     try:
         user = User.objects.get(rfid = tagId)
@@ -278,11 +284,12 @@ def addOrSubtract(tagId, credit, is_addition, reader_credit):
         #RESET user credit if credit is 0
         if reader_credit == 0:
             user.credit = 0
+            lostPoints = True
         user.save()
         credit = user.credit
     except Exception as e:
         error_msg = e
-    return user, credit, error_msg
+    return user, credit, error_msg, lostPoints
 
 def getGroupAverage(user):
     group = user.group
@@ -299,6 +306,48 @@ def getGroupAverage(user):
     except Exception as e:
         error_msg = e
     return average_credit, error_msg
+
+#def determineSwipeSideConditions(user, group_average, lostPoints, c, reader): 
+#    atRecommendedStation = False
+#    goToAnyLocation = False
+#    is_cargo = False
+#    if reader.name == user.goto_location:
+#        atRecommendedStation = True
+#    if user.goto_location == 'any':
+#        goToAnyLocation = True
+#    if user.is_cargo == 'True':
+#        is_cargo = True
+#    selectAppropriateRules(user, group_average, lostPoints, c, reader, atRecommendedStation, is_cargo, goToAnyLocation)
+#    break
+#
+#def selectAppropriateRules(user, group_average, lostPoints, c, reader, atRecommendedStation, is_cargo, goToAnyLocation):
+#    rule = ''
+#    rules = []
+#    if is_cargo == True:
+#        rules.append('RULE_7')
+#        rules.append('RULE_8')
+#    #check whether player has zeroed out first
+#    if atRecommendedStation == False:
+#        #TDOO: flip a coin between rule 2 and 3
+##        if flip(0.5) == 'H':
+##            rule = 'RULE_2'
+##        else:
+##            rule = 'RULE_3'
+#        rules.append('RULE_3')
+#    elif atRecommendedStation == True or goToAnyLocation == True:
+#        #80% of the time, select rule 2        
+#        if flip(0.8):
+#            rule = 'RULE_2'
+#        else:
+#            rule = 'DO_NOTHING'
+#     
+#        
+#         
+#        
+#def flip(p):
+#    return True if random.random() < p else False
+#    
+     
 
 @csrf_exempt 
 def setup(request):
