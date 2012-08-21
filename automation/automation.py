@@ -1,5 +1,5 @@
 import random
-
+from sets import Set
 
 def determineSwipeSideConditions(user, group_average, lostPoints, c, reader): 
     atRecommendedStation = False
@@ -38,3 +38,54 @@ def selectAppropriateRules(user, group_average, lostPoints, c, reader, atRecomme
         
 def flip(p):
     return True if random.random() < p else False
+    
+def processRules(rules, user, param):
+	for rule in rules:
+		if rule == 'RULE_5':
+			callee = pickRecipient(user.group, user)
+			# Make a call with delay
+		elif rule == 'RULE_10':
+			groups = getGroups()
+			for group in groups:
+				callee = pickRecipient(group, None)
+				# Make a call with delay
+		elif rule == 'RULE_2':
+			probability = Extra.objects.get(name='CALL_PROBABILITY')
+			if flip(probability):
+				# Make a call
+			elif:
+				# Don't make a call
+		else:
+			if rule == 'RULE_7':
+				# Make a call
+			elif rule == 'RULE_6':
+				# Make a call
+			elif rule == 'RULE_3':
+				# Make a call
+			
+def getGroups():
+	users = User.objects.all()
+	groups = Set()
+	for user in users:
+		groups.add(user.group)
+	return groups
+	
+def pickRecipient(group_id, not_user):
+	users = User.objects.get(group=group_id)
+	while True:
+		user = users.get(int(random()*len(users)))
+		if not user.isCargo and not user == not_user:
+			return user			
+		
+def makeCall(user, message, params):
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
