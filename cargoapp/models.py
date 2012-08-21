@@ -57,5 +57,5 @@ class Extra(models.Model):
     name = models.CharField(max_length=30)
     value = models.CharField(max_length=100)
     def __unicode__(self):
-        return self.description
+        return self.name
     
