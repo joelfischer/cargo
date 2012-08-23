@@ -116,6 +116,18 @@ def getCargoInGroup(groupNo):
 def sendMessageToCop(user):
     number = user.phone_num
     name = user.name
+    
+    msg = "Player has zeroed out: Name " + name + ". Phone number: +" + number
+    copNumber = Extra.objects.filter(name="COP_NUMBER").order_by('?')[0]
+    
+    url="https://secure.itagg.com/smsg/sms.mes"
+    data = urllib.urlencode({"usr":"CL-SimonEvans", "pwd":"ucTv}6tb7", "from":"Cargo", "to":copNumber, "type":"text","route":"7", "txt":msg})
+#    proxy = urllib2.ProxyHandler({'http': '128.243.20.248:3128'})
+#    opener = urllib2.build_opener(proxy)
+#    urllib2.install_opener(opener)
+    page = urllib2.urlopen(url,data)
+    print page.read()
+
 
 def processRules(rules, user, param):
     for rule in rules:
