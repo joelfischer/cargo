@@ -264,7 +264,6 @@ def checkin(request):
             else:
                 all_checkins = Checkin.objects.order_by('checkin_date')
                 all_checkins = all_checkins.reverse()
-                print all_checkins
                 all_users = User.objects.all()
         except Exception as e:                       
             error_msg += str(e)
@@ -307,6 +306,49 @@ def getGroupAverage(user):
     except Exception as e:
         error_msg = e
     return average_credit, error_msg
+
+@csrf_exempt 
+def process_heartbeat(request):
+    try:
+        dic = request.POST
+        readerId = str(dic.get('readerId'))
+        initialCredit = int(dic.get('initial_credit'))
+        credit = int(dic.get('credit'))
+        checkin_credit = int(dic.get('checkin_credit'))
+        status = str(dic.get('status'))
+        name = str(dic.get('name'))
+        
+        print 'HEARTBEAT from '+name+", "+status
+#        print status
+#        print initialCredit, credit, checkin_credit
+        location = Location.objects.get(reader_id = readerId)
+        if location.last_heartbeat == '' or location.last_heartbeat is None or status == 'NOT CONFIGURED':
+            #first heartbeat. return config. 
+            location.last_heartbeat = datetime.now()
+            location.save()
+            config = []
+            config.append(location)
+            update = serializers.serialize("json", config)
+            return HttpResponse(update)
+        if location.update_next_heartbeat:
+            location.last_heartbeat = datetime.now()
+            location.update_next_heartbeat = False
+            location.save()
+            config = []
+            config.append(location)
+            update = serializers.serialize("json", config)
+            return HttpResponse(update)
+        else:
+            location.last_heartbeat = datetime.now()
+            location.credit = credit
+            location.status = status
+            location.name = name
+            location.save()
+        locations = Location.objects.all()   
+    except Exception as e:
+        print e
+    return render_to_response('cargoapp/locations.html', {'all_locations': locations},
+                                   context_instance=RequestContext(request))
 
 @csrf_exempt 
 def setup(request):

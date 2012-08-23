@@ -15,7 +15,13 @@ class User(models.Model):
 class Location(models.Model):
     reader_id = models.CharField(max_length=30, unique=True)
     name = models.CharField(max_length=30)
-    credit = models.IntegerField(max_length=10)
+    init_credit = models.IntegerField(max_length=10)
+    checkin_credit = models.IntegerField(max_length=10)
+    credit = models.IntegerField(max_length=10, editable = False, null = True)
+    is_addition = models.BooleanField(default = True)
+    status = models.CharField(max_length=30, default = 'unseen', editable = False)
+    last_heartbeat = models.DateTimeField(editable=False, blank=True, null=True)
+    update_next_heartbeat = models.BooleanField()
     def __unicode__(self):
         return self.name
 

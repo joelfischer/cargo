@@ -41,6 +41,37 @@ $(function() {
         }
 	})
 });
+
+
+$(function() {
+	$("table#locationsTable").tablesorter({ 
+		//sortList: [[1,0]],
+		// extract data from markup and return it  
+		textExtraction: function(node) { 
+			id = node.id;
+			toSort = '';
+			if (id == 'location_col') {
+				 toSort = node.childNodes[0].firstChild.innerHTML;
+			}
+			if (id == 'status_col') {
+				 toSort = node.childNodes[0].firstChild.innerHTML;
+			}
+			if (id == 'credit_col') {
+				 toSort = node.childNodes[0].firstElementChild.innerHTML;
+			}
+			if (id == 'init_credit_col') {
+				 toSort = node.childNodes[0].firstElementChild.innerHTML;		
+			}
+			if (id == 'checkin_col') {
+				 toSort = node.childNodes[0].firstElementChild.innerHTML;		
+			}
+			if (id == 'heartbeat_col') {
+				 toSort = node.childNodes[0].firstElementChild.innerHTML;		
+			}
+            return toSort; 
+        }
+	})
+});
 {%block javascript%}
 {% endblock %}
 </script>

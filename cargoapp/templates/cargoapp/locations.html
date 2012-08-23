@@ -13,11 +13,15 @@
  </div>
  <div>
 	
-	<table class="table table-striped" id="playersTable">
+	<table class="table table-striped" id="locationsTable">
    		<thead>
     	<tr> 
-     		<th><a rel='twipsy' title='Click to sort by player'><div><h3>Location (id)</h3></div></a></th>
-     		<th><a rel='twipsy' title='Click to sort by credit'><div><h3>Credit</h3></div></a></th>
+     		<th><a rel='twipsy' title='Click to sort by location'><div><h3>Location (id)</h3></div></a></th>
+     		<th><a rel='twipsy' title='Click to sort by status'><div><h3>Status</h3></div></a></th>
+     		<th><a rel='twipsy' title='Click to sort by credit'><div><h3>Current credit</h3></div></a></th>
+     		<th><a rel='twipsy' title='Click to sort by initial credit'><div><h3>Start credit</h3></div></a></th>
+     		<th><a rel='twipsy' title='Click to sort by checkin value'><div><h3>Checkin value</h3></div></a></th>
+     		<th><a rel='twipsy' title='Click to sort by heartbeat'><div><h3>Last seen</h3></div></a></th>
     	</tr>
    		</thead>
    		<tbody>
@@ -28,8 +32,12 @@
    		{%else%}
    		{%for location in all_locations%}
    		<tr>
-   			<td id="player_col"><div><h4>{{location.name}} ({{location.reader_id}})</h4></div></td>   		
+   			<td id="player_col"><div><h4>{{location.name}} ({{location.reader_id}})</h4></div></td>
+   			<td id="status_col"><div><h4>{{location.status}}</h4></div></td>   			   		
    			<td id="credit_col"><div><h4>{{location.credit}}</h4></div></td>
+   			<td id="init_credit_col"><div><h4>{{location.init_credit}}</h4></div></td>   			
+   			<td id="checkin_col"><div><h4>{{location.checkin_credit}}</h4></div></td>
+   			<td id="heartbeat_col"><div><h4>{{location.last_heartbeat}}</h4></div></td>
    		</tr>
    		  		
    		 {%endfor%}
