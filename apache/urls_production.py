@@ -17,6 +17,11 @@ urlpatterns = patterns('',
     url(r'^setup/$', 'cargoapp.views.setup'),
 	url(r'^report_call_status/$', 'cargoapp.views.report_call_status'),
     url(r'^$', 'cargoapp.views.index'),
+    url(r'^register_user_post/$','cargoapp.views.register_user_post'),
+    url(r'^players/$','cargoapp.views.view_players'),
+    url(r'^locations/$','cargoapp.views.view_locations'),
+    url(r'^heartbeat/$','cargoapp.views.process_heartbeat'),
+    url(r'^gui/$','cargoapp.views.get_all_status'),
     # url(r'^cargoapp/', include('cargoapp.foo.urls')),
 
 
