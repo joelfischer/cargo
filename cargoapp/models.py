@@ -8,7 +8,7 @@ class User(models.Model):
     rfid = models.CharField(max_length=200, editable=False)
     is_cargo = models.BooleanField() 
     credit = models.IntegerField(max_length=10)
-    goto_location = models.CharField(max_length=30)
+    goto_location = models.CharField(max_length=30, blank = True, null=True)
     def __unicode__(self):
         return self.name
     

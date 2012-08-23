@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from cargoapp.models import User, Checkin, Tag, Message, Call, Location
 from django.core import serializers
 from string import Template
-from automation.automation import determineSwipeSideConditions, selectAppropriateRules
+from automation.automation import determineSwipeSideConditions, selectAppropriateRules, processRules
 
 def index(request):
     values = {}
@@ -249,7 +249,8 @@ def checkin(request):
                 if reader is not None:
                     atRecommendedStation, goToAnyLocation = determineSwipeSideConditions(user, reader)
                     rules = selectAppropriateRules(user, credit, group_average, lostPoints, atRecommendedStation, goToAnyLocation)
-                    #selectRecipient(rules, user)
+                    print rules
+                    processRules(rules, user, '')
                 
                 all_checkins = Checkin.objects.order_by('checkin_date')
                 all_checkins.reverse()
