@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+<head>
+
+<title>Cargo check-ins</title>
+
+<link rel="stylesheet" href="{{STATIC_URL}}css/bootstrap.css">
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery-latest.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.tablesorter.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap-twipsy.js"></script>
+<style type="text/css">
+ body {
+       background-color: #20502F;
+  }
+</style>
+<script type="text/javascript" >
+
+
+function updatePage() {
+	  
+	  $.get("/cargo/gui/", function(data) {
+		  //append data to list
+		  //alert("RETURNED:" + data);
+		  var items = [];
+		  var json = (jQuery.parseJSON(data));
+		  if (json!=null) {
+			  for (var i=0; i<json.length; i++) {
+				  
+				  // DO SOMETHING WITH THE DATA. //
+				    
+			  }
+		  }
+	  });
+	  
+	  var t = setTimeout("updatePage()", 1000);
+}
+
+</script>
+
+</head>
+
+<body onload="updatePage()">
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="brand" href="/cargo/index">cargo</a>
+          <ul class="nav">
+            <li><a href="/cargo/checkin" class="active">Check-ins</a></li>  
+            <li><a href="/cargo/calls">Calls</a></li>  
+            <li><a href="/cargo/registration">Registration</a></li>
+            <li><a href="/cargo/setup">Set up tags</a></li>  
+            <li><a href="/cargo/players">Players</a></li>	 
+            <li><a href="/cargo/locations">Locations</a></li>	           
+          </ul>
+          <ul class="nav pull-right">
+            <li class="divider-vertical"></li>            
+          {%if user %}
+         	{%if user.is_authenticated %}
+           	 <li><a href="#">Logged in as {{user}}</a></li>
+           	 <li class="divider-vertical"></li>
+           	 <li><a href="/cargo/logout">Log out</a></li>
+          	{%else%}
+          	<li><a href="/cargo/login">Sign up | Log in</a></li>
+          	{%endif%} 
+          {%endif%}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+	 <div class="content">
+      <div class="hero-unit" align="left">
+       <div class="page-header">
+        <h1>martin's graphical playground</h1>	
+       </div>
+       
+       <!-- placeholder for data passed via jQuery -->
+ 	   <div id="gui">
+ 	   </div>
+      
+      
+      
+		
+     <footer align="center">
+        <a rel='twipsy' title='Orchid' href="http://www.orchid.ac.uk">
+         <img src="{{STATIC_URL}}images/orchid-logo-bw-small.gif" alt="Orchid Project"/>
+         </a>
+        <p><small>&copy; 2012.</small> 
+       </p>
+     </footer>
+        
+        
+    </div>
+ </body>
+</html>
+

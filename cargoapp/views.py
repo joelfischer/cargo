@@ -420,6 +420,31 @@ def setup(request):
         return render_to_response('cargoapp/define_tag.html', {'all_tags': all_tags},
                                    context_instance=RequestContext(request))
         
+def get_all_status(request):
+    if request.is_ajax():
+        update = []
+        try:        
+            users = User.objects.all()
+            for user in users:
+                update.append(user)
+            locations = Location.objects.all()
+            for location in locations:
+                update.append(location)
+            cs = Checkin.objects.all()
+            for c in cs: 
+                update.append(c)
+            calls = Call.objects.all()
+            for call in calls:
+                update.append(call)
+            update = serializers.serialize("json", update)
+        except Exception as e:
+            print e
+        return HttpResponse(update)
+    else: 
+        return render_to_response('cargoapp/gui.html',
+                               context_instance=RequestContext(request))
+    
+        
 def view_players(request):
     all_players = User.objects.all()
     return render_to_response('cargoapp/players.html', {'all_players': all_players},
