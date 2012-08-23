@@ -21,6 +21,7 @@ urlpatterns = patterns('',
     url(r'^cargo/players/$','cargoapp.views.view_players'),
     url(r'^cargo/locations/$','cargoapp.views.view_locations'),
     url(r'^cargo/heartbeat/$','cargoapp.views.process_heartbeat'),
+    url(r'^cargo/gui/$','cargoapp.views.get_all_status'),
     # url(r'^cargoapp/', include('firesim.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
