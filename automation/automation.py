@@ -99,7 +99,6 @@ def makeCall(user, message, params):
         url = 'http://api.tropo.com/1.0/sessions?action=create&token='+ token + '&numberToCall=' + user.phone_num + '&messageToSay=' + msg + '&call_id' + str(call.id)
         page = urllib.urlopen(url)
         response = page.read()
-        print response
     except Exception as e:
         print e;
         call.status = -3;
@@ -113,6 +112,19 @@ def getCargoInGroup(groupNo):
     users = User.objects.filter(group=groupNo)
     return users.get(is_cargo=True)
 
+def sendSMS(number, message):
+    print "******Sending SMS*********"
+    print number
+    print message
+    
+    url="https://secure.itagg.com/smsg/sms.mes"
+    data = urllib.urlencode({"usr":"CL-SimonEvans", "pwd":"ucTv}6tb7", "from":"+441138685351", "to":str(number), "type":"text","route":"7", "txt":message})
+#    proxy = urllib2.ProxyHandler({'http': '128.243.20.248:3128'})
+#    opener = urllib2.build_opener(proxy)
+#    urllib2.install_opener(opener)
+    page = urllib2.urlopen(url,data)
+    print page.read()
+
 def sendMessageToCop(user):
     number = user.phone_num
     name = user.name
@@ -120,16 +132,7 @@ def sendMessageToCop(user):
     msg = "Player has zeroed out: Name " + name + ". Phone number: +" + number
     copNumber = Extra.objects.filter(name="COP_NUMBER").order_by('?')[0]
     
-    print "**************TEXTING COP***************"
-    print copNumber
-    
-    url="https://secure.itagg.com/smsg/sms.mes"
-    data = urllib.urlencode({"usr":"CL-SimonEvans", "pwd":"ucTv}6tb7", "from":"Cargo", "to":copNumber.value, "type":"text","route":"7", "txt":msg})
-#    proxy = urllib2.ProxyHandler({'http': '128.243.20.248:3128'})
-#    opener = urllib2.build_opener(proxy)
-#    urllib2.install_opener(opener)
-    page = urllib2.urlopen(url,data)
-    print page.read()
+    sendSMS(copNumber.value, msg)
 
 
 def processRules(rules, user, param):
