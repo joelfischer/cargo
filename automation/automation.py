@@ -124,7 +124,7 @@ def sendMessageToCop(user):
     print copNumber
     
     url="https://secure.itagg.com/smsg/sms.mes"
-    data = urllib.urlencode({"usr":"CL-SimonEvans", "pwd":"ucTv}6tb7", "from":"Cargo", "to":copNumber, "type":"text","route":"7", "txt":msg})
+    data = urllib.urlencode({"usr":"CL-SimonEvans", "pwd":"ucTv}6tb7", "from":"Cargo", "to":copNumber.value, "type":"text","route":"7", "txt":msg})
 #    proxy = urllib2.ProxyHandler({'http': '128.243.20.248:3128'})
 #    opener = urllib2.build_opener(proxy)
 #    urllib2.install_opener(opener)
