@@ -81,6 +81,16 @@ def calls(request):
     else:
 
 		return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request))
+        
+def get_score(request):
+    number = request.POST.get('number')
+    
+    try:
+        user = User.objects.get(phone_num=number)
+    except Excpetion as e:
+        return "Sorry, I do not know who you are. Good bye!"
+    
+    return "Hello " + user.name + ". You currently have " user. credit " credits."
 
 def parse_message(message, user):
 	msg = message.content
