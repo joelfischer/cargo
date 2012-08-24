@@ -1,6 +1,6 @@
 import random
 from sets import Set
-from cargoapp.models import Extra, User, Message, Call, Location
+from cargoapp.models import Extra, User, Message, Call, Location, Checkin
 import time, urllib, urllib2
 from threading import Thread
 from string import Template
@@ -168,7 +168,7 @@ def processRules(rules, user, param):
             if flip(probability/100.0):
                 # Make a call
                 callee = user
-                location = pickHighValueLocation()
+                location = pickHighValueLocation(callee)
                 if location is not None:
                     user.goto_location = location.name
                     user.save()
@@ -199,11 +199,12 @@ def processRules(rules, user, param):
                 user.save()
 
 
-def pickHighValueLocation():
+def pickHighValueLocation(user):
     locations = Location.objects.filter(credit__gte=int(Extra.objects.get(name='HIGH_VALUE_LOCATION').value)).order_by('?')
-    try:
-        location = locations[0]
-    except Exception as e:
-        print e
-        return None
-    return location
+    visited_locations = Checkin.objects.filter(rfid=user.rfid)
+    for loc in locations:
+        if visited_locations.filter(name=loc.name):
+            pass
+        else:
+            return loc
+    return None
