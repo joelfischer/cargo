@@ -86,12 +86,14 @@ $(function() {
           <ul class="nav">
             <li><a href="/cargo/checkin">Check-ins</a></li>  
             <li><a href="/cargo/calls">Calls</a></li>  
-            <li><a href="/cargo/registration">Registration</a></li>  
-            <li><a href="/cargo/setup">Set up tags</a></li> 
-            <li><a href="/cargo/players">Players</a></li>	
+         <li><a href="/cargo/players">Players</a></li>	
             <li><a href="/cargo/locations">Locations</a></li>	
           </ul>
           <ul class="nav pull-right">
+          	<li class="divider-vertical"></li> 
+          	<li><a href="/cargo/setup">Set up tags</a></li>
+          	<li><a href="/cargo/registration">Registration</a></li>  
+          	<li><a href="/cargo/admin">Admin</a></li>  
             <li class="divider-vertical"></li>            
           {%if user %}
          	{%if user.is_authenticated %}
@@ -99,7 +101,7 @@ $(function() {
            	 <li class="divider-vertical"></li>
            	 <li><a href="/cargo/logout">Log out</a></li>
           	{%else%}
-		<li><a href="/cargo/login">Sign up | Log in</a></li>
+		<li><a href="/cargo/admin">Sign up | Log in</a></li>
           	{%endif%} 
           {%endif%}
           </ul>
@@ -112,6 +114,9 @@ $(function() {
 	
 		<div class="content">
 		
+		{%block logout%}
+		{% endblock %}
+		
 		{%if user.is_authenticated%}
 		<div id="content" align="left">
 		{%block content%}
@@ -120,7 +125,7 @@ $(function() {
 		{%else%}
 		<div id="content" align="left">
 		<div class="hero-unit">
-		<h1>Please <a href=/cargo/admin>login</a> first.
+		<h1>Please login <a href=/cargo/admin>here</a>.
 		</div>
 		</div>
 		{%endif%}

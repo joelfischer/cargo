@@ -60,12 +60,14 @@ function listenForTags() {
           <ul class="nav">
             <li><a href="/cargo/checkin">Check-ins</a></li>  
             <li><a href="/cargo/calls">Calls</a></li>  
-            <li><a href="/cargo/registration">Registration</a></li>  
-            <li><a href="/cargo/setup">Set up tags</a></li>  
-            <li><a href="/cargo/players">Players</a></li>	
-             <li><a href="/cargo/locations">Locations</a></li>	            
+         <li><a href="/cargo/players">Players</a></li>	
+            <li><a href="/cargo/locations">Locations</a></li>	
           </ul>
           <ul class="nav pull-right">
+          	<li class="divider-vertical"></li> 
+          	<li><a href="/cargo/setup">Set up tags</a></li>
+          	<li><a href="/cargo/registration">Registration</a></li>  
+          	<li><a href="/cargo/admin">Admin</a></li>  
             <li class="divider-vertical"></li>            
           {%if user %}
          	{%if user.is_authenticated %}
@@ -73,7 +75,7 @@ function listenForTags() {
            	 <li class="divider-vertical"></li>
            	 <li><a href="/cargo/logout">Log out</a></li>
           	{%else%}
-          	<li><a href="/cargo/login">Sign up | Log in</a></li>
+		<li><a href="/cargo/admin">Sign up | Log in</a></li>
           	{%endif%} 
           {%endif%}
           </ul>
