@@ -22,6 +22,7 @@ urlpatterns = patterns('',
     url(r'^locations/$','cargoapp.views.view_locations'),
     url(r'^heartbeat/$','cargoapp.views.process_heartbeat'),
     url(r'^gui/$','cargoapp.views.get_all_status'),
+    url(r'^get_score/$','cargoapp.views.get_score'),
     # url(r'^cargoapp/', include('cargoapp.foo.urls')),
 
 
