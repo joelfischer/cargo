@@ -164,10 +164,13 @@ def processRules(rules, user, param):
                 t = Thread(target=makeCallWithDelay, args=(callee, msg, params, 10))
                 t.start()
         if rule == 'RULE_2':
+            user.goto_location = None
+            user.save()
             try:
                 probability = int(Extra.objects.get(name='CALL_PROBABILITY').value)
             except Exception as e:
                 print e
+
             if flip(probability/100.0):
                 # Make a call
                 callee = user
