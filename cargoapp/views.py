@@ -80,7 +80,8 @@ def calls(request):
     else:
 
 		return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request))
-        
+
+@csrf_exempt  
 def get_score(request):
     number = request.POST.get('number')
     
