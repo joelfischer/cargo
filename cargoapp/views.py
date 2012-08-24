@@ -89,8 +89,8 @@ def get_score(request):
     try:
         user = User.objects.get(phone_num=number)
     except Exception as e:
-        return "Sorry, I do not know who you are. Good bye!"
-    return "Hello " + user.name + ". You currently have "+ user.credit +" credits."
+        return HttpResponse("Sorry, I do not know who you are. Good bye!")
+    return HttpResponse("Hello " + user.name + ". You currently have "+ user.credit +" credits.")
 
 def parse_message(message, user):
 	msg = message.content
