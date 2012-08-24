@@ -12,7 +12,7 @@ def determineSwipeSideConditions(user, reader):
         atRecommendedStation = True
     if user.goto_location == 'any':
         goToAnyLocation = True
-    if user.goto_location == '':
+    if user.goto_location == '' or user.goto_location is None or user.goto_location == 'None':
         goToAnyLocation = True
     return atRecommendedStation, goToAnyLocation
 
