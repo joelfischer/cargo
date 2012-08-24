@@ -1,7 +1,7 @@
 import random
 from sets import Set
 from cargoapp.models import Extra, User, Message, Call, Location
-import time, urllib
+import time, urllib, urllib2
 from threading import Thread
 from string import Template
 
