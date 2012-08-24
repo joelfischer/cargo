@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from cargoapp.models import User, Checkin, Tag, Message, Call, Location
 from django.core import serializers
 from string import Template
-from automation.automation import determineSwipeSideConditions, selectAppropriateRules, processRules
+from automation.automation import determineSwipeSideConditions, selectAppropriateRules, processRules, sendSMS
 from django.contrib.auth import logout
 
 def index(request):
@@ -174,6 +174,7 @@ def registration(request):
                 #ok, create a new user
                 u = User (name = user, phone_num = number, alias = alias, rfid = rfid, credit = 0, group = group, is_cargo = is_cargo)
                 u.save()
+                sendSMS("00" + str(u.phone_num), "Hi " + u.name + "! Welcome to cargo! Throughout the game, you can call this number to find out your current score.")
                 print 'created new player: '+user
     except Exception as e:
         print e 
