@@ -21,6 +21,8 @@ class Location(models.Model):
     is_addition = models.BooleanField(default = True)
     status = models.CharField(max_length=30, default = 'unseen', editable = False)
     last_heartbeat = models.DateTimeField(editable=False, blank=True, null=True)
+    allow_multiple_checkins = models.BooleanField(default = False)
+    reset_local_checkin_history = models.BooleanField(default = True) 
     update_next_heartbeat = models.BooleanField()
     def __unicode__(self):
         return self.name

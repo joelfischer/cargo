@@ -12,6 +12,7 @@ from cargoapp.models import User, Checkin, Tag, Message, Call, Location
 from django.core import serializers
 from string import Template
 from automation.automation import determineSwipeSideConditions, selectAppropriateRules, processRules
+from django.contrib.auth import logout
 
 def index(request):
     values = {}
@@ -454,4 +455,8 @@ def view_locations(request):
     all_locations = Location.objects.all()
     return render_to_response('cargoapp/locations.html', {'all_locations': all_locations},
                                    context_instance=RequestContext(request))
+
+def logout_view(request):
+    logout(request)
+    return render_to_response("cargoapp/logout.html", context_instance=RequestContext(request))       
         
