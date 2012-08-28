@@ -178,7 +178,9 @@ def registration(request):
                 print e
                 #ok, create a new user
                 try:
-                    initial_credits = Extra.objects.get(name="INITIAL_PLAYER_CREDITS").value
+                    initial_credits = int(Extra.objects.get(name="INITIAL_PLAYER_CREDITS").value)
+                    print   'INITIAL_CREDITS'
+                    print initial_credits
                 except Exception as e2:
                     print e2
                     print "WARNING: NO INITIAL PLAYER CREDITS FOUND"
