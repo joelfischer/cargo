@@ -8,7 +8,7 @@ from datetime import *
 from django import forms
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
-from cargoapp.models import User, Checkin, Tag, Message, Call, Location
+from cargoapp.models import User, Checkin, Tag, Message, Call, Location, Extra
 from django.core import serializers
 from string import Template
 from automation.automation import determineSwipeSideConditions, selectAppropriateRules, processRules, sendSMS, callAllPlayers
