@@ -180,7 +180,7 @@ def registration(request):
                 try:
                     initial_credits = Extra.objects.get(name="INITIAL_PLAYER_CREDITS")
                 except Exception as e2:
-                    print e
+                    print e2
                     initial_credits = 0
                 
                 u = User (name = user, phone_num = number, alias = alias, rfid = rfid, credit = int(initial_credits.value), group = group, is_cargo = is_cargo)
