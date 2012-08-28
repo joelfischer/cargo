@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from cargoapp.models import User, Checkin, Tag, Message, Call, Location
 from django.core import serializers
 from string import Template
-from automation.automation import determineSwipeSideConditions, selectAppropriateRules, processRules, sendSMS
+from automation.automation import determineSwipeSideConditions, selectAppropriateRules, processRules, sendSMS, callAllPlayers
 from django.contrib.auth import logout
 
 def index(request):
@@ -31,8 +31,13 @@ def calls(request):
     	user_id = request.POST.get("user");
     	message_id = request.POST.get("message");
     	
+        msg = Message.objects.get(id=message_id);
+        
+        if user_id == '-1':
+            callAllPlayers(msg):
+            return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request));
+        
     	user = User.objects.get(id=user_id);
-    	msg = Message.objects.get(id=message_id);
     	
     	msg.content = parse_message(msg, user);
     	

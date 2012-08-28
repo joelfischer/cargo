@@ -18,6 +18,7 @@
  {% for user in users%}
   <option value="{{user.id}}">{{user.name}}</option>
  {% endfor %}
+  <option value="-1">__ALL_PLAYERS__</option>
  </select>
  and play message:
  <select name ="message">
