@@ -216,7 +216,7 @@ def pickHighValueLocation(user):
     return None
 
 def callAllPlayers(msg):
-    users = User.objects.getAll()
+    users = User.objects.all()
     for user in users:
         params = {"name":user.name}
         makeCall(user, msg, params)
