@@ -34,7 +34,7 @@ def calls(request):
         msg = Message.objects.get(id=message_id);
         
         if user_id == '-1':
-            callAllPlayers(msg):
+            callAllPlayers(msg)
             return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request));
         
     	user = User.objects.get(id=user_id);
