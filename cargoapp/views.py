@@ -178,12 +178,13 @@ def registration(request):
                 print e
                 #ok, create a new user
                 try:
-                    initial_credits = Extra.objects.get(name="INITIAL_PLAYER_CREDITS")
+                    initial_credits = Extra.objects.get(name="INITIAL_PLAYER_CREDITS").value
                 except Exception as e2:
                     print e2
+                    print "WARNING: NO INITIAL PLAYER CREDITS FOUND"
                     initial_credits = 0
                 
-                u = User (name = user, phone_num = number, alias = alias, rfid = rfid, credit = int(initial_credits.value), group = group, is_cargo = is_cargo)
+                u = User (name = user, phone_num = number, alias = alias, rfid = rfid, credit = int(initial_credits), group = group, is_cargo = is_cargo)
                 u.save()
                 sendSMS("00" + str(u.phone_num), "Hi " + u.name + "! Welcome to cargo! Throughout the game, you can call this number to find out your current score.")
                 print 'created new player: '+user
