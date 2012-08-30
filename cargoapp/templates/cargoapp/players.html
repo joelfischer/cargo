@@ -16,9 +16,16 @@
 	<table class="table table-striped" id="playersTable">
    		<thead>
     	<tr> 
+    		<th><a rel='twipsy' title='Click to sort by group'><div><h3>Group</h3></div></a></th>
      		<th><a rel='twipsy' title='Click to sort by player'><div><h3>Player (alias)</h3></div></a></th>
      		<th><a rel='twipsy' title='Click to sort by credit'><div><h3>Credit</h3></div></a></th>
-     		<th><a rel='twipsy' title='Click to sort by group'><div><h3>Group</h3></div></a></th>
+     		<th><a rel='twipsy' title='Click to sort by cargo'><div><h3>Cargo?</h3></div></a></th>
+     		<th><div><h3>Phone number</h3></div></th>
+     		<th><div><h3>Registered tag</h3></div></th>
+     		<th><div><h3>Last rec. loc.</h3></div></th>
+     		<th><a rel='twipsy' title='Click to sort by average'><div><h3>Group avg.</h3></div></a></th>
+     		<th><a rel='twipsy' title='Click to sort by date'><div><h3>Last seen</h3></div></a></th>
+     		<th><a rel='twipsy' title='Click to sort by location'><div><h3>At</h3></div></a></th>
     	</tr>
    		</thead>
    		<tbody>
@@ -29,9 +36,20 @@
    		{%else%}
    		{%for player in all_players%}
    		<tr>
+ 	  		<td id="group_col"><div><h4>{{player.group}}</h4></div></td> 
    			<td id="player_col"><div><h4>{{player.name}} ({{player.alias}})</h4></div></td>   		
    			<td id="credit_col"><div><h4>{{player.credit}}</h4></div></td>
-   			<td id="group_col"><div><h4>{{player.group}}</h4></div></td>   			
+   			<td id="cargo_col"><div><h4>{{player.is_cargo}}</h4></div></td>
+   			<td id="phone_col"><div><h4>{{player.phone_num}}</h4></div></td>
+   			<td id="alias_col"><div><h4>{{player.alias}}</h4></div></td>
+   			<td id="rec_col"><div><h4>{{player.goto_location}}</h4></div></td>
+   			{%for checkin in recent_checkins%}
+   			{%ifequal checkin.rfid player.rfid%}
+   			<td id="avg_col"><div><h4>{{checkin.group_average}}</h4></div></td>
+   			<td id="date_col"><div><h4>{{checkin.checkin_date}}</h4></div></td>
+   			<td id="loc_col"><div><h4>{{checkin.name}}</h4></div></td>
+   			{%endifequal%}
+   			{%endfor%}   			  			
    		</tr>
    		  		
    		 {%endfor%}

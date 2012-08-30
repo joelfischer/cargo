@@ -9,6 +9,7 @@ from django import forms
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from cargoapp.models import User, Checkin, Tag, Message, Call, Location, Extra
+from django.db.models import Max
 from django.core import serializers
 from string import Template
 from automation.automation import determineSwipeSideConditions, selectAppropriateRules, processRules, sendSMS, callAllPlayers
@@ -158,11 +159,13 @@ def registration(request):
         if alias is '':
             error_msg += '- Missing alias -'
         group = str(post_dic.get('group'))
+        if group == 'none':
+            error_msg += '- Missing group -'
         if str(post_dic.get('is_cargo'))=='True':
             is_cargo = True
         else:
             is_cargo = False
-        if user != 'None' and user is not '' and number is not '' and alias is not '':
+        if user != 'None' and user is not '' and number is not '' and alias is not '' and group != 'none':
             #check whether alias exists
             try:
                 t = Tag.objects.get(alias=alias)
@@ -179,8 +182,6 @@ def registration(request):
                 #ok, create a new user
                 try:
                     initial_credits = int(Extra.objects.get(name="INITIAL_PLAYER_CREDITS").value)
-                    print   'INITIAL_CREDITS'
-                    print initial_credits
                 except Exception as e2:
                     print e2
                     print "WARNING: NO INITIAL PLAYER CREDITS FOUND"
@@ -474,7 +475,14 @@ def get_all_status(request):
         
 def view_players(request):
     all_players = User.objects.all()
-    return render_to_response('cargoapp/players.html', {'all_players': all_players},
+    recent_checkins = []
+    for player in all_players:
+        try:
+            most_recent_checkin = Checkin.objects.filter(rfid=player.rfid).order_by('-checkin_date')[0]
+            recent_checkins.append(most_recent_checkin)
+        except Exception as e:
+            print e
+    return render_to_response('cargoapp/players.html', {'all_players': all_players, 'recent_checkins': recent_checkins},
                                    context_instance=RequestContext(request))
     
 def view_locations(request):

@@ -1,7 +1,7 @@
 from django.db import models
 
 class User(models.Model):
-    name = models.CharField(max_length=15)
+    name = models.CharField(max_length=50)
     phone_num = models.CharField(max_length=30)
     group = models.CharField(max_length=30, choices=[('1', '1'), ('2', '2') , ('3', '3'), ('4', '4'), ('5', '5'), ('6', '6'), ('7', '7'), ('8', '8'), ('9', '9'), ('10', '10')])
     alias = models.CharField(max_length=30)
@@ -13,7 +13,7 @@ class User(models.Model):
         return self.name
     
 class Location(models.Model):
-    reader_id = models.CharField(max_length=30, unique=True)
+    reader_id = models.CharField(max_length=30, unique=True) 
     name = models.CharField(max_length=30)
     init_credit = models.IntegerField(max_length=10)
     checkin_credit = models.IntegerField(max_length=10)
@@ -28,9 +28,9 @@ class Location(models.Model):
         return self.name
 
 class Checkin(models.Model):
-    location = models.CharField(max_length=200)
-    name = models.CharField(max_length=30)
-    rfid = models.CharField(max_length=200)
+    location = models.CharField(max_length=200) #Location.name
+    name = models.CharField(max_length=30)  #Location.reader_id 
+    rfid = models.CharField(max_length=200) #User.rfid, #Tag.rfid
     reader_credit = models.IntegerField(max_length=10)
     user_credit = models.IntegerField(max_length=10)
     checkin_date = models.DateTimeField(auto_now_add=True)
