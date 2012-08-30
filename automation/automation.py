@@ -50,7 +50,8 @@ def selectAppropriateRules(user, checkin_credit, group_average, lostPoints, atRe
             if user.credit >= threshold:
                 #check whether this is a new excess
                 if user.credit-checkin_credit < threshold:
-                    rules.append('RULE_5')
+                    if not user.is_fake:
+                        rules.append('RULE_5')
         if extra.name == 'GROUP_THRESHOLD':
             try:
                 threshold = int(extra.value)
