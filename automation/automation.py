@@ -184,9 +184,9 @@ def processRules(rules, user, param):
         else:
             if rule == 'RULE_7':
                 # Make a call
-                callee = pickRecipient(user.group, None)
+                #callee = pickRecipient(user.group, None)
                 #msg = Message.objects.get(name='RULE_7')
-                makeCall(callee, msg, {})
+                #makeCall(callee, msg, {})
                 callee = user
                 msg = Message.objects.get(name='RULE_8')
                 makeCall(callee, msg, {})
