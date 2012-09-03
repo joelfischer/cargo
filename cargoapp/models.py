@@ -52,11 +52,13 @@ class Message(models.Model):
 		return unicode(self.name)    
 
 class Call(models.Model):
-	callee = models.CharField(max_length=200)
-	message = models.CharField(max_length=200)
-	date = models.DateTimeField(auto_now_add=True)
-	status = models.IntegerField(default=0)
-	def __unicode__(self):
+    callee = models.CharField(max_length=200)
+    message = models.CharField(max_length=200)
+    date = models.DateTimeField(auto_now_add=True)
+    status = models.IntegerField(default=0)
+    is_SMS = models.BooleanField(default=False)
+    content = models.TextField()
+    def __unicode__(self):
 		return unicode(self.id)   
   
 

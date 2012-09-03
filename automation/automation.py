@@ -19,7 +19,6 @@ def determineSwipeSideConditions(user, reader):
 def selectAppropriateRules(user, checkin_credit, group_average, lostPoints, atRecommendedStation, goToAnyLocation):
     rules = []
     if user.is_cargo == True:
-        rules.append('RULE_7')
         rules.append('RULE_8')
     else:
         if lostPoints:
@@ -84,19 +83,26 @@ def getGroups():
         groups.add(user.group)
     return groups
 
-def makeCall(user, message, params):
+def contactPlayer(name, number, message_name, message_content, params, is_SMS):
+    if is_SMS:
+        sendSMS(name,number,message_name,message_content,params)
+    else:
+        makeCall(name,number,message_name,message_content,params)
+    
+    
+def makeCall(name, number, message_name, message_content, params):
     token = '13acde1200cc5142acde42576458b5b7a48c638058a26304bdf34c476b11647b18c0da3b5ce13ceb7cb852a5';
-    msg = Template(message.content).safe_substitute(params)
+    msg = Template(message_content).safe_substitute(params)
 
     print '##### CALLING #####'
-    print user.name
+    print name
     print msg
 
-    call = Call(callee=user.name, message=message.name);
-    call.save();
+    call = createCall(name, message_name, msg, False)
 
     try:
-        url = 'http://api.tropo.com/1.0/sessions?action=create&token='+ token + '&numberToCall=' + user.phone_num + '&messageToSay=' + msg + '&call_id' + str(call.id)
+        data = urllib.urlencode({"action":"create", "token":token, 'numberToCall':number, 'messageToSay':msg, 'call_id':str(call.id)})
+        url = 'http://api.tropo.com/1.0/sessions?' + data
         page = urllib.urlopen(url)
         response = page.read()
     except Exception as e:
@@ -104,26 +110,35 @@ def makeCall(user, message, params):
         call.status = -3;
         call.save();
 
-def makeCallWithDelay(user,message,params,delay):
+def makeCallWithDelay(name, number, message_name, message_content, params,delay):
     time.sleep(delay)
-    makeCall(user,message,params)
+    makeCall(name, number, message_name, message_content, params)
 
 def getCargoInGroup(groupNo):
     users = User.objects.filter(group=groupNo)
     return users.get(is_cargo=True)
 
-def sendSMS(number, message):
+def sendSMS(name, number, message_name, message_content, params):
     print "******Sending SMS*********"
-    print number
-    print message
+    print name
+    
+    msg = Template(message_content).safe_substitute(params)
+    print msg
+    
+    call = createCall(name, message_name, msg, True)
     
     url="https://secure.itagg.com/smsg/sms.mes"
-    data = urllib.urlencode({"usr":"CL-SimonEvans", "pwd":"ucTv}6tb7", "from":"+441138685351", "to":str(number), "type":"text","route":"7", "txt":message})
+    data = urllib.urlencode({"usr":"CL-SimonEvans", "pwd":"ucTv}6tb7", "from":"+441138685351", "to":str(number), "type":"text","route":"7", "txt":msg})
 #    proxy = urllib2.ProxyHandler({'http': '128.243.20.248:3128'})
 #    opener = urllib2.build_opener(proxy)
 #    urllib2.install_opener(opener)
     page = urllib2.urlopen(url,data)
     print page.read()
+    
+def createCall(recipient_name, message_title, message_content, is_SMS):
+    call = Call(callee=recipient_name, message=message_title, content = message_content, is_SMS = is_SMS)
+    call.save();
+    return call
 
 def sendMessageToCop(user):
     number = user.phone_num
@@ -132,13 +147,14 @@ def sendMessageToCop(user):
     msg = "Player has zeroed out: Name " + name + ". Phone number: +" + number
     copNumber = Extra.objects.filter(name="COP_NUMBER").order_by('?')[0]
     
-    sendSMS(copNumber.value, msg)
+    sendSMS("COP",copNumber.value, "Zeroed player", msg, {})
 
 
 def processRules(rules, user, param):
     for rule in rules:
         if rule == 'RULE_5':
-            callee = pickRecipient(user.group, user)
+            #callee = pickRecipient(user.group, user)
+            callee = getCargoInGroup(user.group)
             # Make a call with delay
             max_threshold = None
             max_threshold_value = 0
@@ -149,19 +165,20 @@ def processRules(rules, user, param):
             msg = Message.objects.get(name=max_threshold.for_object_id)
             params = {"points":max_threshold.value, "name":callee.name, "target":user.name}
             # Launch new thread to make a call after 60 seconds.
-            t = Thread(target=makeCallWithDelay, args=(callee, msg, params, 50))
+            t = Thread(target=makeCallWithDelay, args=(callee.name, callee.phone_num, msg.name, msg.content, params, 50))
             t.start()
         if rule == 'RULE_10':
             groups = getGroups()
             for group in groups:
-                callee = pickRecipient(group, None)
+                #callee = pickRecipient(group, None)
+                callee = getCargoInGroup(group)
                 if group == user.group:
                 # Make a call with delay
                     msg = Message.objects.get(name='RULE_10A')
                 else:
                     msg = Message.objects.get(name='RULE_10B')
                 params = {}
-                t = Thread(target=makeCallWithDelay, args=(callee, msg, params, 80))
+                t = Thread(target=makeCallWithDelay, args=(callee.name, callee.phone_num, msg.name, msg.content, params, 80))
                 t.start()
         if rule == 'RULE_2':
             user.goto_location = None
@@ -180,9 +197,9 @@ def processRules(rules, user, param):
                     user.save()
                     params = {'name':user.name,'location':location.name}
                     msg = Message.objects.get(name='RULE_2')
-                    makeCall(callee, msg, params)
+                    makeCall(callee.name, callee.phone_num, msg.name, msg.content, params)
         else:
-            if rule == 'RULE_7':
+            if rule == 'RULE_8':
                 # Make a call
                 #callee = pickRecipient(user.group, None)
                 #msg = Message.objects.get(name='RULE_7')
@@ -194,13 +211,13 @@ def processRules(rules, user, param):
                 callee = getCargoInGroup(user.group)
                 msg = Message.objects.get(name='RULE_6')
                 params = {'target':user.name, 'name':callee.name}
-                makeCall(callee, msg, params)
+                makeCall(callee.name, callee.phone_num, msg.name, msg.content, params)
                 sendMessageToCop(user)
             elif rule == 'RULE_3':
                 callee = user
                 params = {'location':user.goto_location, 'name' : user.name}
                 msg = Message.objects.get(name='RULE_3')
-                makeCall(callee, msg, params)
+                makeCall(callee.name, callee.phone_num, msg.name, msg.content, params)
                 user.goto_location = None
                 user.save()
 
@@ -215,8 +232,20 @@ def pickHighValueLocation(user):
             return loc
     return None
 
-def callAllPlayers(msg):
+def contactAllPlayers(msg, is_SMS):
     users = User.objects.all()
-    for user in users:
-        params = {"name":user.name}
-        makeCall(user, msg, params)
+    for callee in users:
+        params = {"name":callee.name, "points":callee.credit}
+        if (is_SMS):
+            sendSMS(callee.name, callee.phone_num, msg.name, msg.content, params)
+        else:
+            makeCall(callee.name, callee.phone_num, msg.name, msg.content, params)
+        
+def contactCargoPlayers(msg, is_SMS):
+    users = User.objects.filter(is_cargo=True)
+    for callee in users:
+        params = {"name":callee.name, "points":callee.credit}
+        if (is_SMS):
+            sendSMS(callee.name, callee.phone_num, msg.name, msg.content, params)
+        else:
+            makeCall(callee.name, callee.phone_num, msg.name, msg.content, params)

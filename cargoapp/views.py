@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from cargoapp.models import User, Checkin, Tag, Message, Call, Location, Extra
 from django.core import serializers
 from string import Template
-from automation.automation import determineSwipeSideConditions, selectAppropriateRules, processRules, sendSMS, callAllPlayers
+from automation.automation import determineSwipeSideConditions, selectAppropriateRules, processRules, sendSMS, contactAllPlayers, contactCargoPlayers, contactPlayer
 from django.contrib.auth import logout
 
 def index(request):
@@ -27,48 +27,29 @@ def calls(request):
     values = {'users':users, 'messages':messages}
 
     if (request.method == "POST"):
-    	token = '13acde1200cc5142acde42576458b5b7a48c638058a26304bdf34c476b11647b18c0da3b5ce13ceb7cb852a5';
-    	user_id = request.POST.get("user");
-    	message_id = request.POST.get("message");
-    	
-        msg = Message.objects.get(id=message_id);
+    	user_id = request.POST.get("user")
+    	message_id = request.POST.get("message")
+        method = request.POST.get("method")
+        
+        print ("User initiated call to User " + user_id + " with Message " + message_id + " and method is " + method)
+        
+        if message_id=='0':
+            msg = Message(name = "Custom Message", content = request.POST.get("custom_message"))
+        else:
+            msg = Message.objects.get(id=message_id)
         
         if user_id == '-1':
-            callAllPlayers(msg)
+            contactAllPlayers(msg, method =="SMS")
+            return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request));
+        if user_id == '-2':
+            contactCargoPlayers(msg, method == "SMS")
             return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request));
         
     	user = User.objects.get(id=user_id);
-    	
-    	msg.content = parse_message(msg, user);
-    	
-    	call = Call(callee=user.name, message=msg.name);
-    	call.save();
-    	
-    	try:
-            #params = urllib.urlencode({'token':token, 'numberToCall':user.phone_num, 'messageToSay':msg.content, 'call_id':str(call.id) })
-            #conn = httplib.HTTPConnection('api.tropo.com');
-    		#conn = httplib.HTTPConnection('128.243.20.248',3128);            
-            #working code!!!
-            #conn.request("GET", 'http://api.tropo.com/1.0/sessions?action=create');
-            url = 'http://api.tropo.com/1.0/sessions?action=create&token='+ token + '&numberToCall=' + user.phone_num + '&messageToSay=' + msg.content + '&call_id' + str(call.id)
-            page = urllib.urlopen(url)
-            response = page.read()
-            
-            print response
-            return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request));
-            
-            #if (conn.getresponse()):
-    		
-            #else:
-    		#	call.status = -3;
-    		#	call.save();
-    		#	return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request));
-    	except Exception as e:
-    		print e;
-    		call.status = -3;
-    		call.save();
-    		return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request));
-    	
+        params = {'name':user.name, 'group':user.group, 'points':user.credit}
+    	contactPlayer(user.name, user.phone_num, msg.name, msg.content, params, method == "SMS")
+        return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request));
+
     if request.is_ajax():
         update = []
         #TODO: return non-displayed checkins.
@@ -97,14 +78,6 @@ def get_score(request):
         return HttpResponse("Sorry, I do not know who you are. Good bye!")
     
     return HttpResponse("Hello " + user.name + ". You currently have " + str(user.credit) +" credits.")
-
-def parse_message(message, user):
-	msg = message.content
-	dict = {'name':user.name, 'group':user.group, 'points':user.credit}
-	
-	msg = Template(message.content).safe_substitute(dict)
-	
-	return msg
 
 @csrf_exempt 
 def report_call_status(request):
@@ -183,12 +156,13 @@ def registration(request):
                     print initial_credits
                 except Exception as e2:
                     print e2
-                    print "WARNING: NO INITIAL PLAYER CREDITS FOUND"
+                    print "WARNING: NO INITIAL_PLAYER_CREDITS found in EXTRAS table"
                     initial_credits = 0
                 
                 u = User (name = user, phone_num = number, alias = alias, rfid = rfid, credit = int(initial_credits), group = group, is_cargo = is_cargo)
+                m = Message.objects.get(name="RULE_1")
                 u.save()
-                sendSMS("00" + str(u.phone_num), "Hi " + u.name + "! Welcome to cargo! Throughout the game, you can call this number to find out your current score.")
+                sendSMS(u.name,"00" + str(u.phone_num), m.name, m.content, {"name":u.name, "group":u.group, "points":u.credit})
                 print 'created new player: '+user
     except Exception as e:
         print e 

@@ -13,20 +13,44 @@
  </div>
 <!-- <form name="callform" action="http://api.tropo.com/1.0/sessions?" target="_blank"> -->
  <form name="callform" method="post">
- Call player:
+ Contact player:
  <select name="user">
  {% for user in users%}
   <option value="{{user.id}}">{{user.name}}</option>
  {% endfor %}
   <option value="-1">__ALL_PLAYERS__</option>
+  <option value="-2">__CARGO_PLAYERS__</option>
  </select>
- and play message:
+ with:
+ <input type="radio" name="method" value="CALL" checked> Phone call or
+<input type="radio" name="method" value="SMS" > SMS 
+ and message:
  <select name ="message">
  {% for message in messages%}
   <option value="{{message.id}}">{{message.name}}</option>
  {% endfor %}
  </select>
-  <input type="submit" value="CALL!" class="btn btn-primary">
+  <input type="submit" value="  GO!  " class="btn btn-primary">
+ </form>
+ 
+ <div><h2>OR</h2><br></div>
+ 
+ <form name="customcallform" method="post">
+ Contact player:
+ <select name="user">
+ {% for user in users%}
+  <option value="{{user.id}}">{{user.name}}</option>
+ {% endfor %}
+  <option value="-1">__ALL_PLAYERS__</option>
+  <option value="-2">__CARGO_PLAYERS__</option>
+ </select>
+ with:
+ <input type="radio" name="method" value="CALL" checked> Phone call or
+<input type="radio" name="method" value="SMS" > SMS 
+ and message:
+  <textarea cols="40" rows="4" name="custom_message">Enter message text here. You can use $name for player's name and $points for their current score and $group for their group number.</textarea>
+  <input type="hidden" value="0" name="message">
+  <input type="submit" value="  GO!  " class="btn btn-primary">
  </form>
  
  <div>
@@ -34,7 +58,8 @@
  <div id="calls">
 
 </div>
-</div> </div>
+</div>
+</div>
 
 {% endblock %}
 
@@ -54,8 +79,16 @@ function updatePage() {
 				  var callee = json[i].fields.callee;
 				  var message = json[i].fields.message;
 				  var status = json[i].fields.status;
+				  var is_SMS = json[i].fields.is_SMS;
+				  var content = json[i].fields.content;
 				  
-				  line = '<div> Call to: <b>'+callee+'</b>, with message: <b>'+ message + '</b> at: '+ date + " Status: <b>";
+				  var method = "";
+				  if(is_SMS)
+				  	method = "SMS";
+				  else
+				  	method = "CALL";
+				  
+				  line = '<div> <b>' + method + '</b> to: <b>'+callee+'</b>, with message: <b><abbr title="' + content +'">'+ message + '</abbr></b> at: '+ date + " Status: <b>";
 				  if (status == 1)
 				  	line = line + '<span style="color:orange">Waiting.</span>';
 				  else if (status == 0)
