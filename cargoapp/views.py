@@ -8,7 +8,7 @@ from datetime import *
 from django import forms
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
-from cargoapp.models import User, Checkin, Tag, Message, Call, Location, Extra, Game, All_User
+from cargoapp.models import User, Checkin, Tag, Message, Call, Location, Extra, Game, All_User, All_Checkin
 from django.db.models import Max
 from django.core import serializers
 from string import Template
@@ -142,7 +142,9 @@ def registration(request):
         else:
             is_fake = False 
         game = str(post_dic.get('game'))
-        if user != 'None' and user is not '' and number is not '' and alias is not '' and group != 'none':
+        if game == 'none':
+            error_msg += '- Missing game -'
+        if user != 'None' and user is not '' and number is not '' and alias is not '' and group != 'none' and game != 'none':
             #check whether alias exists
             try:
                 t = Tag.objects.get(alias=alias)
@@ -514,6 +516,10 @@ def set_up_game(request):
 
 def loadPlayersAndClearCheckins(current_game):
     User.objects.all().delete()
+    checkins = Checkin.objects.all()
+    for c in checkins:
+        tosave_checkin = All_Checkin (location = c.location, rfid = c.rfid, name=c.name, reader_credit = c.reader_credit, user_credit = c.user_credit, group_average = c.group_average, game_name = c.game_name)
+        tosave_checkin.save()
     Checkin.objects.all().delete()
     all_players = All_User.objects.all()
     for player in all_players:

@@ -55,6 +55,18 @@ class Checkin(models.Model):
     def __unicode__(self):
         return unicode(self.checkin_date)
     
+class All_Checkin(models.Model):
+    game_name = models.CharField(max_length=30) #Game.name
+    location = models.CharField(max_length=200) #Location.name
+    name = models.CharField(max_length=30)  #Location.reader_id 
+    rfid = models.CharField(max_length=200) #User.rfid, #Tag.rfid
+    reader_credit = models.IntegerField(max_length=10)
+    user_credit = models.IntegerField(max_length=10)
+    checkin_date = models.DateTimeField(auto_now_add=True)
+    group_average = models.FloatField(max_length=10)
+    def __unicode__(self):
+        return unicode(self.checkin_date)
+    
 class Tag(models.Model):
     rfid = models.CharField(max_length=200, unique = True, editable=True)
     alias = models.CharField(max_length=200, unique = True)
