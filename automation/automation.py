@@ -166,7 +166,7 @@ def processRules(rules, user, param):
             msg = Message.objects.get(name=max_threshold.for_object_id)
             params = {"points":max_threshold.value, "name":callee.name, "target":user.name}
             # Launch new thread to make a call after 60 seconds.
-            t = Thread(target=makeCallWithDelay, args=(callee.name, callee.phone_num, msg.name, msg.content, params, 50))
+            t = Thread(target=makeCallWithDelay, args=(callee.name, callee.phone_num, msg.name, msg.content, params, 45))
             t.start()
         if rule == 'RULE_10':
             groups = getGroups()
@@ -178,8 +178,8 @@ def processRules(rules, user, param):
                     msg = Message.objects.get(name='RULE_10A')
                 else:
                     msg = Message.objects.get(name='RULE_10B')
-                params = {}
-                t = Thread(target=makeCallWithDelay, args=(callee.name, callee.phone_num, msg.name, msg.content, params, 80))
+                params = {'name':callee.name}
+                t = Thread(target=makeCallWithDelay, args=(callee.name, callee.phone_num, msg.name, msg.content, params, 90))
                 t.start()
         if rule == 'RULE_2':
             user.goto_location = None
