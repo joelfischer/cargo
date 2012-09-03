@@ -233,7 +233,7 @@ def checkin(request):
             except Exception as e:
                 print e
             if tagId is not '':  
-                user, user_credit, error, lostPoints = addOrSubtract(tagId, credit, is_addition, reader_credit)
+                user, user_credit, error, lostPoints = addOrSubtract(tagId, credit, is_addition)
                 group_average, error_msg = getGroupAverage(user)
                 if error is not '':
                     print 'Check in with unassigned tag -- have you loaded players for this game? ERROR: '+error
@@ -284,7 +284,7 @@ def checkin(request):
         return render_to_response('cargoapp/checkin.html', {'all_checkins': all_checkins, 'all_users': all_users},
                                    context_instance=RequestContext(request))
 
-def addOrSubtract(tagId, credit, is_addition, reader_credit):
+def addOrSubtract(tagId, credit, is_addition):
     error_msg = ''
     lostPoints = False
     print credit
@@ -295,7 +295,7 @@ def addOrSubtract(tagId, credit, is_addition, reader_credit):
         else:
             user.credit -= credit
         #RESET user credit if credit is 0
-        if reader_credit == 0:
+        if credit == 0:
             user.credit = 0
             lostPoints = True
         user.save()
