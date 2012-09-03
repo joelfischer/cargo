@@ -23,7 +23,7 @@ def index(request):
 def calls(request):
     values = {}
     users = User.objects.all()
-    messages = Message.objects.all()
+    messages = Message.objects.exclude(name__contains = "RULE")
     
     values = {'users':users, 'messages':messages}
 
