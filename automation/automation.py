@@ -206,7 +206,7 @@ def processRules(rules, user, param):
                 #msg = Message.objects.get(name='RULE_7')
                 #makeCall(callee, msg, {})
                 callee = user
-                params = {}
+                params = {'name':callee.name}
                 msg = Message.objects.get(name='RULE_8')
                 makeCall(callee.name, callee.phone_num, msg.name, msg.content, params)
             elif rule == 'RULE_6':
