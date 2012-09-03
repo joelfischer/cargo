@@ -206,8 +206,9 @@ def processRules(rules, user, param):
                 #msg = Message.objects.get(name='RULE_7')
                 #makeCall(callee, msg, {})
                 callee = user
+                params = {}
                 msg = Message.objects.get(name='RULE_8')
-                makeCall(callee, msg, {})
+                makeCall(callee.name, callee.phone_num, msg.name, msg.content, params)
             elif rule == 'RULE_6':
                 callee = getCargoInGroup(user.group)
                 msg = Message.objects.get(name='RULE_6')
