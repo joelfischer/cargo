@@ -1,6 +1,21 @@
 from django.db import models
 
 class User(models.Model):
+    game_name = models.CharField(max_length=30) #Game.name
+    name = models.CharField(max_length=50)
+    phone_num = models.CharField(max_length=30)
+    group = models.CharField(max_length=30, choices=[('1', '1'), ('2', '2') , ('3', '3'), ('4', '4'), ('5', '5'), ('6', '6'), ('7', '7'), ('8', '8'), ('9', '9'), ('10', '10')])
+    alias = models.CharField(max_length=30)
+    rfid = models.CharField(max_length=200, editable=False)
+    is_cargo = models.BooleanField() 
+    is_fake = models.BooleanField() 
+    credit = models.IntegerField(max_length=10)
+    goto_location = models.CharField(max_length=30, blank = True, null=True)
+    def __unicode__(self):
+        return self.name
+
+class All_User(models.Model):
+    game_name = models.CharField(max_length=30) #Game.name
     name = models.CharField(max_length=50)
     phone_num = models.CharField(max_length=30)
     group = models.CharField(max_length=30, choices=[('1', '1'), ('2', '2') , ('3', '3'), ('4', '4'), ('5', '5'), ('6', '6'), ('7', '7'), ('8', '8'), ('9', '9'), ('10', '10')])
@@ -29,6 +44,7 @@ class Location(models.Model):
         return self.name
 
 class Checkin(models.Model):
+    game_name = models.CharField(max_length=30) #Game.name
     location = models.CharField(max_length=200) #Location.name
     name = models.CharField(max_length=30)  #Location.reader_id 
     rfid = models.CharField(max_length=200) #User.rfid, #Tag.rfid
@@ -40,7 +56,7 @@ class Checkin(models.Model):
         return unicode(self.checkin_date)
     
 class Tag(models.Model):
-    rfid = models.CharField(max_length=200, unique = True, editable=False)
+    rfid = models.CharField(max_length=200, unique = True, editable=True)
     alias = models.CharField(max_length=200, unique = True)
     assigned = models.BooleanField()    
     def __unicode__(self):
@@ -65,6 +81,12 @@ class Extra(models.Model):
     for_object_id = models.CharField(max_length=30)
     name = models.CharField(max_length=30)
     value = models.CharField(max_length=100)
+    uneditable_value = models.CharField(max_length=30, editable=False)
+    def __unicode__(self):
+        return self.name
+    
+class Game(models.Model):
+    name = models.CharField(max_length=30, unique = True)
     def __unicode__(self):
         return self.name
     

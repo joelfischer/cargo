@@ -81,6 +81,12 @@ $(function() {
         }
 	})
 });
+
+function confirmAction() {
+	if (confirm("This will reset the game logic. I.e., it will delete all history: players loose their points, checkins deleted. Are you sure?")) { 
+	 	document.forms['gameSelector'].submit();
+	}
+}
 {%block javascript%}
 {% endblock %}
 </script>
@@ -100,8 +106,10 @@ $(function() {
           </ul>
           <ul class="nav pull-right">
           	<li class="divider-vertical"></li> 
+          	<li><a href="/cargo/game">Set up game</a></li>
           	<li><a href="/cargo/setup">Set up tags</a></li>
           	<li><a href="/cargo/registration">Registration</a></li>  
+          	<li class="divider-vertical"></li>  
           	<li><a href="/cargo/admin">Admin</a></li>  
             <li class="divider-vertical"></li>            
           {%if user %}
