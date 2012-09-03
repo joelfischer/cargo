@@ -1,0 +1,64 @@
+{% extends "cargoapp/base.html" %}
+
+{% block title %}
+<title>Cargo games</title>
+{% endblock %}
+
+{%block content%}
+
+<div class="hero-unit" align="left">
+
+ <div class="page-header">
+  <h1>which game?</h1>
+ </div>
+ 
+ {%if current_game %}
+ {%if current_game != 'UNDEFINED'%}
+ <div class="alert alert-info">
+ <h2>Current game set to {{current_game}}.</h2>
+ </div>
+ {%else%}
+  <div class="alert alert-error">
+ <h2>Current game set to {{current_game}}.</h2>
+ </div>
+ {%endif%}
+ {%endif%}
+ 
+ <div>
+ <h2>Select the current game.</h2>
+ <form id="gameSelector" class="well" action="/cargo/game/" method="post"> {% csrf_token %}
+  <div>
+  
+  <label>Select game</label>
+  {%if games|length > 0%}
+  <select name="game">
+  {%for game in games%}
+  <option value="{{game.name}}">{{game.name}}</option>
+  {%endfor%}
+  </select>
+  {%else%}
+  <div class="alert alert-error">
+  <h4>No games created yet. Create games in the admin interface <a href="/cargo/admin/">here</a>.</h4>
+ </div>
+  {%endif%}
+
+  </br>
+  
+</form>
+
+ </div>
+
+<div>
+<button class="btn btn-primary btn-large" onclick='confirmAction()'>Save</button>
+ </div>
+ 
+ {%if error_msg != ''%}
+ <div class="alert alert-error">
+  <h2>{{error_msg}}</h2>
+ </div>
+ {%else%}
+ {%endif%}
+ 
+</div>
+
+ {% endblock %}

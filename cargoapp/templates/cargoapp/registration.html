@@ -16,13 +16,25 @@
  <h2>Associate a user with an rfid tag</h2>
  <form class="well" action="/cargo/registration/" method="post"> {% csrf_token %}
   <div>
-  <label>user name</label>
-  <input type="text" id="user_name" name="user_name" {%if error_msg != ''%} value="{{username}}" {%endif%} class="span3" placeholder="user name">
-   <label>phone number</label>
+  <label>Player name</label>
+  <input type="text" id="user_name" name="user_name" {%if error_msg != ''%} value="{{username}}" {%endif%} class="span3" placeholder="Player name">
+   <label>Phone number</label>
   <input type="text" id="number" name="number" {%if error_msg != ''%} value="{{number}}" {%endif%} class="span3" placeholder="44...">
    
-   <label>rfid alias</label>
- 
+   <label>Select game</label>
+  {%if games|length > 0%}
+  <select name="game">
+  {%for game in games%}
+  <option value="{{game.name}}">{{game.name}}</option>
+  {%endfor%}
+  </select>
+  {%else%}
+  <div class="alert alert-error">
+  <h4>No games created yet. Create games in the admin interface <a href="/cargo/admin/">here</a>.</h4>
+ </div>
+  {%endif%}
+   
+   <label>RFID alias</label>
   {%if tags|length > 0%}
   <select name="alias">
   {%for tag in tags%}
@@ -34,11 +46,10 @@
   <h4>No (more) unassigned tags. <a href="/cargo/setup/">Set up tags</a> to register more players.</h4>
  </div>
   {%endif%}
-  
   <!--  <input type="text" id="alias" name="alias" {%if error_msg != ''%} value="{{alias}}" {%endif%} class="span3" placeholder="alias">-->
-  <span class="help-block">The alias defined when setting up the rfid tags.</span>
+  <span class="help-block"> The alias defined when setting up the RFID tags.</span>
   
-  <label>assign to group</label>
+  <label>Assign to group</label>
   <select name="group">
   <option value="none">none</option>
   <option value="1">group 1</option>
@@ -52,11 +63,17 @@
   <option value="9">group 9</option>
   <option value="10">group 10</option>
  </select>
- <span class="help-block">optional.</span>
+ <span class="help-block"> required.</span>
   </div>
   
-  <label>make this player cargo?</label>
+  <label>Make this player cargo?</label>
   <select name="is_cargo">
+  <option value="False">No</option>
+  <option value="True">Yes</option>
+  </select>
+  
+  <label>Is this a fake Id?</label>
+  <select name="is_fake">
   <option value="False">No</option>
   <option value="True">Yes</option>
   </select>

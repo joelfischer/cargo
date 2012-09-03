@@ -8,7 +8,8 @@ from datetime import *
 from django import forms
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
-from cargoapp.models import User, Checkin, Tag, Message, Call, Location, Extra
+from cargoapp.models import User, Checkin, Tag, Message, Call, Location, Extra, Game, All_User
+from django.db.models import Max
 from django.core import serializers
 from string import Template
 from automation.automation import determineSwipeSideConditions, selectAppropriateRules, processRules, sendSMS, contactAllPlayers, contactCargoPlayers, contactPlayer
@@ -119,7 +120,6 @@ def registration(request):
     error_msg = ''
     try:
         #Get posted values
-        print repr(request.POST)
         post_dic = request.POST
         user = str(post_dic.get('user_name'))
         if user is '':
@@ -131,11 +131,18 @@ def registration(request):
         if alias is '':
             error_msg += '- Missing alias -'
         group = str(post_dic.get('group'))
+        if group == 'none':
+            error_msg += '- Missing group -'
         if str(post_dic.get('is_cargo'))=='True':
             is_cargo = True
         else:
             is_cargo = False
-        if user != 'None' and user is not '' and number is not '' and alias is not '':
+        if str(post_dic.get('is_fake'))=='True':
+            is_fake = True
+        else:
+            is_fake = False 
+        game = str(post_dic.get('game'))
+        if user != 'None' and user is not '' and number is not '' and alias is not '' and group != 'none':
             #check whether alias exists
             try:
                 t = Tag.objects.get(alias=alias)
@@ -145,30 +152,28 @@ def registration(request):
                 error_msg = str(e) + ' - wrong alias' 
             #check whether we've already associated that tag to a user
             try: 
-                u = User.objects.get(alias = alias)
+                u = All_User.objects.get(alias = alias)
                 error_msg += '-- Tag with alias "' +alias + '" already assigned to another player --'  
             except Exception as e:
                 print e
                 #ok, create a new user
                 try:
                     initial_credits = int(Extra.objects.get(name="INITIAL_PLAYER_CREDITS").value)
-                    print   'INITIAL_CREDITS'
-                    print initial_credits
                 except Exception as e2:
                     print e2
                     print "WARNING: NO INITIAL_PLAYER_CREDITS found in EXTRAS table"
                     initial_credits = 0
-                
-                u = User (name = user, phone_num = number, alias = alias, rfid = rfid, credit = int(initial_credits), group = group, is_cargo = is_cargo)
-                m = Message.objects.get(name="RULE_1")
+
+                u = All_User (name = user, phone_num = number, alias = alias, rfid = rfid, credit = int(initial_credits), group = group, is_cargo = is_cargo, is_fake = is_fake, game_name = game)
                 u.save()
+                m = Message.objects.get(name="RULE_1")
                 sendSMS(u.name,"00" + str(u.phone_num), m.name, m.content, {"name":u.name, "group":u.group, "points":u.credit})
                 print 'created new player: '+user
     except Exception as e:
         print e 
-    all_users = User.objects.all()
+    all_users = All_User.objects.all()
     all_tags = Tag.objects.all()
-    print all_tags
+    games = Game.objects.all()
     unused_tags = []
     for tag in all_tags:
         exclude_tag = False
@@ -177,7 +182,7 @@ def registration(request):
                 exclude_tag = True
         if exclude_tag == False:
             unused_tags.append(tag)   
-    values = {'username': user, 'alias': alias, 'number': number, 'error_msg': error_msg, 'all_users': all_users, 'tags':unused_tags}
+    values = {'username': user, 'alias': alias, 'number': number, 'error_msg': error_msg, 'all_users': all_users, 'tags':unused_tags, 'games':games}
     return render_to_response('cargoapp/registration.html', values, context_instance=RequestContext(request))
 
 @csrf_exempt 
@@ -230,13 +235,19 @@ def checkin(request):
             if tagId is not '':  
                 user, user_credit, error, lostPoints = addOrSubtract(tagId, credit, is_addition, reader_credit)
                 group_average, error_msg = getGroupAverage(user)
-                print group_average
                 if error is not '':
-                    print 'Check in with unassigned tag'
+                    print 'Check in with unassigned tag -- have you loaded players for this game? ERROR: '+error
                 else:
-                    print 'User "'+ user.name +'" checked in, new credit: '+ str(user_credit)  
+                    print 'User "'+ user.name +'" checked in, new credit: '+ str(user_credit)
+                    
+                #get current game id
+                current_game = 'UNDEFINED'
+                try: 
+                    current_game = Extra.objects.get(name='CURRENT_GAME').uneditable_value
+                except Exception as e:
+                    'ERROR: Extra with name CURRENT_GAME cannot be found: '+str(e)
                                
-                c = Checkin (location = readerId, rfid = tagId, name=name, reader_credit = reader_credit, user_credit = user_credit, group_average = group_average)
+                c = Checkin (location = readerId, rfid = tagId, name=name, reader_credit = reader_credit, user_credit = user_credit, group_average = group_average, game_name = current_game)
                 c.save()   
                 
                 try:
@@ -258,7 +269,7 @@ def checkin(request):
                 all_users = User.objects.all()    
                                     
                 print("|-----------------------|")
-                print("|-------NEW POST--------|")
+                print("|----SWIPE processed----|")
                 print("|-READER  -|-   TAGID  -|")
                 print("|- %s -|-%s-|" % (readerId, tagId) )
                 print("|-----------------------|")
@@ -448,7 +459,14 @@ def get_all_status(request):
         
 def view_players(request):
     all_players = User.objects.all()
-    return render_to_response('cargoapp/players.html', {'all_players': all_players},
+    recent_checkins = []
+    for player in all_players:
+        try:
+            most_recent_checkin = Checkin.objects.filter(rfid=player.rfid).order_by('-checkin_date')[0]
+            recent_checkins.append(most_recent_checkin)
+        except Exception as e:
+            print e
+    return render_to_response('cargoapp/players.html', {'all_players': all_players, 'recent_checkins': recent_checkins},
                                    context_instance=RequestContext(request))
     
 def view_locations(request):
@@ -458,5 +476,53 @@ def view_locations(request):
 
 def logout_view(request):
     logout(request)
-    return render_to_response("cargoapp/logout.html", context_instance=RequestContext(request))       
+    return render_to_response("cargoapp/logout.html", context_instance=RequestContext(request))
+
+def set_up_game(request):
+    current_game = ''
+    error_msg = ''
+    set_game = ''
+    #try to find current game
+    try:
+        C_G = Extra.objects.get(name='CURRENT_GAME')
+        if C_G.uneditable_value == '':
+            current_game = 'UNDEFINED'
+        else:
+            current_game = C_G.uneditable_value
+    except Exception as e:
+        print e
+    try:
+        dic = request.POST
+        if str(dic.get('game')) != 'None':
+            set_game = str(dic.get('game'))
+        if set_game != '':
+            try:
+                C_G = Extra.objects.get(name='CURRENT_GAME')
+                C_G.value = 'use set up game view to change this'
+                C_G.uneditable_value = set_game
+                C_G.save()
+                current_game = set_game
+                loadPlayersAndClearCheckins(current_game)
+            except Exception as e:
+                error_msg = 'ERROR trying to find Extra with name CURRENT_GAME: '+str(e)
+                print error_msg 
+    except Exception as e:
+        error_msg = 'ERROR setting up game: '+str(e)
+        print error_msg
+    games = Game.objects.all()
+    return render_to_response("cargoapp/game.html", {'games':games, 'error_msg':error_msg, 'current_game':current_game}, context_instance=RequestContext(request))
+
+def loadPlayersAndClearCheckins(current_game):
+    User.objects.all().delete()
+    Checkin.objects.all().delete()
+    all_players = All_User.objects.all()
+    for player in all_players:
+        if player.game_name == current_game:
+            u = User (name = player.name, phone_num = player.phone_num, alias = player.alias, rfid = player.rfid, credit = player.credit, group = player.group, is_cargo = player.is_cargo, is_fake = player.is_fake, game_name = player.game_name)
+            u.save()
+            
+            
+    
+    
+    
         
