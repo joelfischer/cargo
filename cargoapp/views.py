@@ -280,10 +280,15 @@ def checkin(request):
                 all_checkins = Checkin.objects.order_by('checkin_date')
                 all_checkins = all_checkins.reverse()
                 all_users = User.objects.all()
+                try:
+                    current_game = Extra.objects.get(name='CURRENT_GAME')
+                except Exception as e:
+                    print e
+                    current_game = ''
         except Exception as e:                       
             error_msg += str(e)
             print error_msg
-        return render_to_response('cargoapp/checkin.html', {'all_checkins': all_checkins, 'all_users': all_users},
+        return render_to_response('cargoapp/checkin.html', {'all_checkins': all_checkins, 'all_users': all_users, 'game':current_game},
                                    context_instance=RequestContext(request))
 
 def addOrSubtract(tagId, credit, is_addition):
@@ -461,6 +466,11 @@ def get_all_status(request):
         
 def view_players(request):
     all_players = User.objects.all()
+    try:
+        current_game = Extra.objects.get(name='CURRENT_GAME')
+    except Exception as e:
+        print e
+        current_game = ''
     recent_checkins = []
     for player in all_players:
         try:
@@ -468,7 +478,7 @@ def view_players(request):
             recent_checkins.append(most_recent_checkin)
         except Exception as e:
             print e
-    return render_to_response('cargoapp/players.html', {'all_players': all_players, 'recent_checkins': recent_checkins},
+    return render_to_response('cargoapp/players.html', {'all_players': all_players, 'recent_checkins': recent_checkins, 'game':current_game},
                                    context_instance=RequestContext(request))
     
 def view_locations(request):
