@@ -34,7 +34,7 @@ class All_User(models.Model):
     
 class Location(models.Model):
     reader_id = models.CharField(max_length=30, unique=True) 
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=200)
     init_credit = models.IntegerField(max_length=10)
     checkin_credit = models.IntegerField(max_length=10)
     credit = models.IntegerField(max_length=10, editable = False, null = True)
