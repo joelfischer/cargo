@@ -541,8 +541,8 @@ def loadPlayersAndClearCheckins(current_game):
 def receive_SMS(request):
     text = request.POST.get('text');
     number = request.POST.get('number');
-    print('Received SMS: ' + text + '\n From: ' + number + '\n');
-    matched_msg == None
+    print('Received SMS: ' + text + '\n From: ' + number);
+    matched_msg = None;
     
     pro_text = process_string(text)
     
@@ -550,7 +550,7 @@ def receive_SMS(request):
         if levenshtein(process_string(msg.name), process_string(text)) <= len(process_string(msg.name))/5:
             matched_msg = msg;
     
-    if matchd_msg:
+    if matched_msg:
         print("Matched message: " + matched_msg.name)
     else:
         print("No Match: " + text)
