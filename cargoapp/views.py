@@ -552,6 +552,7 @@ def receive_SMS(request):
     
     if matched_msg:
         print("Matched message: " + matched_msg.name)
+        contactPlayer("Khaled",number, matched_msg.name, matched_msg.content, {"name":"Bob"}, False)
     else:
         print("No Match: " + text)
     
