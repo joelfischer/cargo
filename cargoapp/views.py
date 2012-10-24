@@ -560,7 +560,7 @@ def receive_SMS(request):
 def process_string(str):
     processed = '';
     for c in str:
-        if ch.isalnum():
+        if c.isalnum():
             processed = processed + c;
     
     return processed.lower()
