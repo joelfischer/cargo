@@ -552,7 +552,7 @@ def receive_SMS(request):
     
     if matchd_msg:
         print("Matched message: " + matched_msg.name)
-    else
+    else:
         print("No Match: " + text)
     
     return HttpResponse('Done!');
