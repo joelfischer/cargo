@@ -537,8 +537,56 @@ def loadPlayersAndClearCheckins(current_game):
             u = User (name = player.name, phone_num = player.phone_num, alias = player.alias, rfid = player.rfid, credit = player.credit, group = player.group, is_cargo = player.is_cargo, is_fake = player.is_fake, game_name = player.game_name)
             u.save()
             
+@csrf_exempt 
+def receive_SMS(request):
+    text = request.POST.get('text');
+    number = request.POST.get('number');
+    print('Received SMS: ' + text + '\n From: ' + number + '\n');
+    matched_msg == None
+    
+    pro_text = process_string(text)
+    
+    for msg in Message.objects.getAll():
+        if levenshtein(process_string(msg.name), process_string(text)) <= len(process_string(msg.name))/5:
+            matched_msg = msg;
+    
+    if matchd_msg:
+        print("Matched message: " + matched_msg.name)
+    else
+        print("No Match: " + text)
+    
+    return HttpResponse('Done!');
             
+def process_string(str):
+    processed = '';
+    for c in str:
+        if ch.isalnum():
+            processed = processed + c;
     
-    
-    
+    return processed.lower()
+
+def printMatrix(m):
+    print ' '
+    for line in m:
+        spTupel = ()
+        breite = len(line)
+        for column in line:
+            spTupel = spTupel + (column, )
+        print "%3i"*breite % spTupel
+
+def levenshtein(s1, s2):
+    l1 = len(s1)
+    l2 = len(s2)
+
+    matrix = [range(l1 + 1)] * (l2 + 1)
+    for zz in range(l2 + 1):
+      matrix[zz] = range(zz,zz + l1 + 1)
+    for zz in range(0,l2):
+      for sz in range(0,l1):
+        if s1[sz] == s2[zz]:
+          matrix[zz+1][sz+1] = min(matrix[zz+1][sz] + 1, matrix[zz][sz+1] + 1, matrix[zz][sz])
+        else:
+          matrix[zz+1][sz+1] = min(matrix[zz+1][sz] + 1, matrix[zz][sz+1] + 1, matrix[zz][sz] + 1)
+    return matrix[l2][l1]
+
         
