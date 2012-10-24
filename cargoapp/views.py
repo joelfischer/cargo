@@ -546,7 +546,7 @@ def receive_SMS(request):
     
     pro_text = process_string(text)
     
-    for msg in Message.objects.getAll():
+    for msg in Message.objects.all():
         if levenshtein(process_string(msg.name), process_string(text)) <= len(process_string(msg.name))/5:
             matched_msg = msg;
     
