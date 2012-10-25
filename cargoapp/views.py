@@ -547,6 +547,28 @@ def receive_SMS(request):
     call = Call(callee=number, message=text, content = text, is_SMS = True)
     call.save();
     
+    pro_text = process_string(text)
+    
+    for msg in Message.objects.all():
+        if levenshtein(process_string(msg.name), process_string(text)) <= len(process_string(msg.name))/5:
+            matched_msg = msg;
+    
+    if matched_msg:
+        print("Matched message: " + matched_msg.name)
+        contactPlayer(number,number, matched_msg.name, matched_msg.content, {"name":"Bob"}, False);
+    else:
+        print("No Match: " + text)
+    
+    return HttpResponse('Done!');
+
+def receive_SMS_get(request):
+    text = "Random text"; #request.GET.get('text');
+    number = request.GET.get('msisdn');
+    print('Received SMS: ' + text + '\n From: ' + number);
+    matched_msg = None;
+    
+    call = Call(callee=number, message=text, content = text, is_SMS = True)
+    call.save();
     
     pro_text = process_string(text)
     
@@ -556,7 +578,7 @@ def receive_SMS(request):
     
     if matched_msg:
         print("Matched message: " + matched_msg.name)
-        contactPlayer("Khaled",number, matched_msg.name, matched_msg.content, {"name":"Bob"}, False);
+        contactPlayer(number,number, matched_msg.name, matched_msg.content, {"name":"Bob"}, False);
     else:
         print("No Match: " + text)
     
