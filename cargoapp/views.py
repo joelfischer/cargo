@@ -539,8 +539,8 @@ def loadPlayersAndClearCheckins(current_game):
             
 @csrf_exempt 
 def receive_SMS(request):
-    text = request.POST.get('text');
-    number = request.POST.get('number');
+    text = request.POST.get('content');
+    number = request.POST.get('sender');
     print('Received SMS: ' + text + '\n From: ' + number);
     matched_msg = None;
     
@@ -562,7 +562,7 @@ def receive_SMS(request):
     return HttpResponse('Done!');
 
 def receive_SMS_get(request):
-    text = "Random text"; #request.GET.get('text');
+    text = request.GET.get('message');
     number = request.GET.get('msisdn');
     print('Received SMS: ' + text + '\n From: ' + number);
     matched_msg = None;
