@@ -580,9 +580,9 @@ def receive_SMS(request):
     # Send message
     if send_msg:
         if matched_user:
-            contactPlayer(number,number, matched_msg.name, matched_msg.content, {"name":matched_user.name, "text":text}, False);
+            contactPlayer(number,number, send.name, send_msg.content, {"name":matched_user.name, "text":text}, False);
         else:
-            contactPlayer(number,number, matched_msg.name, matched_msg.content, {"name":"", "text":text}, False);
+            contactPlayer(number,number, send_msg.name, send_msg.content, {"name":"", "text":text}, False);
 
     return HttpResponse('Done!');
 
