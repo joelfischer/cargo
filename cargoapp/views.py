@@ -553,7 +553,7 @@ def receive_SMS(request):
         print "Incoming number unknown: " + number;
     
     if matched_user:
-        call = Call(callee = matched_user.name + "(" + number + ")", message=text, content = text, is_SMS = True)
+        call = Call(callee = matched_user.name + " (" + number + ")", message=text, content = text, is_SMS = True)
     else:
         call = Call(callee=number, message=text, content = text, is_SMS = True)
     call.save();
@@ -580,7 +580,7 @@ def receive_SMS(request):
     # Send message
     if send_msg:
         if matched_user:
-            contactPlayer(number,number, send_msg.name, send_msg.content, {"name":matched_user.name, "text":text}, False);
+            contactPlayer(matched_user.name + " (" + number+ ")",number, send_msg.name, send_msg.content, {"name":matched_user.name, "text":text}, False);
         else:
             contactPlayer(number,number, send_msg.name, send_msg.content, {"name":"", "text":text}, False);
 
