@@ -574,7 +574,7 @@ def receive_SMS(request):
         # No match, check if default message exists.
         try:
             send_msg = Message.objects.get(name="default");
-        except:
+        except Exception as e:
             print ("Default message not found.");
     
     # Send message
