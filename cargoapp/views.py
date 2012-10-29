@@ -543,22 +543,47 @@ def receive_SMS(request):
     number = request.POST.get('sender');
     print('Received SMS: ' + text + '\n From: ' + number);
     matched_msg = None;
+    matched_user = None;
+    send_msg = None;
     
-    call = Call(callee=number, message=text, content = text, is_SMS = True)
+    # Check if number sending text is recognised
+    try:
+        matched_user = User.objects.get(phone_num = number);
+    except Exception as e:
+        print "Incoming number unknown: " + number;
+    
+    if matched_user:
+        call = Call(callee = matched_user.name + "(" + number + ")", message=text, content = text, is_SMS = True)
+    else:
+        call = Call(callee=number, message=text, content = text, is_SMS = True)
     call.save();
     
+    # Strip text of non alphanumeric characters
     pro_text = process_string(text)
     
+    # Check if text matches a message name
     for msg in Message.objects.all():
         if levenshtein(process_string(msg.name), process_string(text)) <= len(process_string(msg.name))/5:
             matched_msg = msg;
     
     if matched_msg:
-        print("Matched message: " + matched_msg.name)
-        contactPlayer(number,number, matched_msg.name, matched_msg.content, {"name":"Bob"}, False);
+        print("Matched message: " + matched_msg.name);
+        send_msg = matched_msg;
     else:
-        print("No Match: " + text)
+        print ("No match: " + text);
+        # No match, check if default message exists.
+        try:
+            send_msg = Message.objects.get(name="default");
+        except:
+            print ("Default message not found.");
     
+    # Send message
+    if send_msg:
+        if matched_user:
+            contactPlayer(number,number, matched_msg.name, matched_msg.content, {"name":matched_user.name}, False);
+        else:
+            contactPlayer(number,number, matched_msg.name, matched_msg.content, {"name":""}, False);
+
     return HttpResponse('Done!');
 
 def receive_SMS_get(request):

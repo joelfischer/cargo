@@ -88,7 +88,7 @@ function updatePage() {
 				  else
 				  	method = "CALL";
 				  
-				  line = '<div> <b>' + method + '</b> to: <b>'+callee+'</b>, with message: <b><abbr title="' + content +'">'+ message + '</abbr></b> at: '+ date + " Status: <b>";
+				  line = '<div> <b>' + method + '</b>: <b>'+callee+'</b>, with message: <b><abbr title="' + content +'">'+ message + '</abbr></b> at: '+ date + " Status: <b>";
 				  if (status == 1)
 				  	line = line + '<span style="color:orange">Waiting.</span>';
 				  else if (status == 0)
