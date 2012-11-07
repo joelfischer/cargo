@@ -23,7 +23,7 @@
  </select>
  with:
  <input type="radio" name="method" value="CALL" checked> Phone call or
-<input type="radio" name="method" value="SMS" disabled="true" > SMS 
+<input type="radio" name="method" value="SMS" disabled="false" > SMS 
  and message:
  <select name ="message">
  {% for message in messages%}
@@ -46,7 +46,7 @@
  </select>
  with:
  <input type="radio" name="method" value="CALL" checked> Phone call or
-<input type="radio" name="method" value="SMS"  disabled="true"> SMS 
+<input type="radio" name="method" value="SMS"  disabled="false"> SMS 
  and message:
   <textarea cols="40" rows="4" name="custom_message">Enter message text here. You can use $name for player's name.</textarea>
   <input type="hidden" value="0" name="message">

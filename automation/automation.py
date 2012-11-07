@@ -128,8 +128,13 @@ def sendSMS(name, number, message_name, message_content, params):
     
     call = createCall(name, message_name, msg, True)
     
-    url="https://secure.itagg.com/smsg/sms.mes"
-    data = urllib.urlencode({"usr":"CL-SimonEvans", "pwd":"ucTv}6tb7", "from":"+441138685351", "to":str(number), "type":"text","route":"7", "txt":msg})
+    #UNCOMMENT FOR iTAGG
+    #url="https://secure.itagg.com/smsg/sms.mes"
+    #data = urllib.urlencode({"usr":"CL-SimonEvans", "pwd":"ucTv}6tb7", "from":"+441138685351", "to":str(number), "type":"text","route":"7", "txt":msg})
+    #UNCOMMENT FOR TXTLOCAL
+    url="http://www.txtlocal.com/sendsmspost.php"
+    data = urllib.urlencode({"uname":"khaled.bachour@nottingham.ac.uk", "hash":"2171de680e141c5342c6b39d51232188c4b434e6", "from":"+447537416040", "selectednums":str(number), "message":msg})
+    
 #    proxy = urllib2.ProxyHandler({'http': '128.243.20.248:3128'})
 #    opener = urllib2.build_opener(proxy)
 #    urllib2.install_opener(opener)
