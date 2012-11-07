@@ -579,10 +579,11 @@ def receive_SMS(request):
     
     # Send message
     if send_msg:
-        if matched_user:
-            contactPlayer(matched_user.name + " (" + number+ ")",number, send_msg.name, send_msg.content, {"name":matched_user.name, "text":text}, False);
-        else:
-            contactPlayer(number,number, send_msg.name, send_msg.content, {"name":"", "text":text}, False);
+        if send_msg.content:
+            if matched_user:
+                contactPlayer(matched_user.name + " (" + number+ ")",number, send_msg.name, send_msg.content, {"name":matched_user.name, "text":text}, False);
+            else:
+                contactPlayer(number,number, send_msg.name, send_msg.content, {"name":"", "text":text}, False);
 
     return HttpResponse('Done!');
 
