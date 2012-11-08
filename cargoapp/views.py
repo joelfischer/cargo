@@ -581,7 +581,10 @@ def receive_SMS(request):
             print("Partial match:" + partial_matched_msg.name);
         else:
             print("Partial match not applied:" + partial_matched_msg.name);
-    else:
+
+    if send_msg:
+        pass;
+    else:    
         print ("No match: " + text);
         # No match, check if default message exists.
         try:
