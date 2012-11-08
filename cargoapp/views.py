@@ -47,7 +47,7 @@ def calls(request):
             return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request));
         
     	user = User.objects.get(id=user_id);
-        params = {'name':user.name, 'group':user.group, 'points':user.credit}
+        params = {'name':user.name, 'group':user.group, 'points':user.credit, 'alias':user.alias}
     	contactPlayer(user.name, user.phone_num, msg.name, msg.content, params, method == "SMS")
         return render_to_response('cargoapp/calls.html', values, context_instance=RequestContext(request));
 
@@ -581,9 +581,9 @@ def receive_SMS(request):
     if send_msg:
         if send_msg.content:
             if matched_user:
-                contactPlayer(matched_user.name + " (" + number+ ")",number, send_msg.name, send_msg.content, {"name":matched_user.name, "text":text}, False);
+                contactPlayer(matched_user.name + " (" + number+ ")",number, send_msg.name, send_msg.content, {"name":matched_user.name, "text":text, "alias":matched_user.alias}, False);
             else:
-                contactPlayer(number,number, send_msg.name, send_msg.content, {"name":"", "text":text}, False);
+                contactPlayer(number,number, send_msg.name, send_msg.content, {"name":"", "text":text, "alias":""}, False);
 
     return HttpResponse('Done!');
 
