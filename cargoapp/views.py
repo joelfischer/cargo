@@ -566,8 +566,10 @@ def receive_SMS(request):
     for msg in Message.objects.all():
         pro_msg = process_string(msg.name)
         if levenshtein(pro_msg, pro_text) <= len(pro_msg)/5:
+            print("Found full match.");
             matched_msg = msg;
         elif pro_msg.find(pro_text) >= 0:
+            print("Found partial match.");
             partial_matched_msg = msg;
     
     if matched_msg:
@@ -576,7 +578,9 @@ def receive_SMS(request):
     elif partial_matched_msg:
         if partial_matched_msg.name.find('*') < 0:
             send_msg = partial_matched_msg;
-            print("Partial match:" + matched_msg.name);
+            print("Partial match:" + partial_matched_msg.name);
+        else:
+            print("Partial match not applied:" + partial_matched_msg.name);
     else:
         print ("No match: " + text);
         # No match, check if default message exists.
