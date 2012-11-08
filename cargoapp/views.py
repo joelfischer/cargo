@@ -574,7 +574,7 @@ def receive_SMS(request):
         print("Matched message: " + matched_msg.name);
         send_msg = matched_msg;
     elif partial_matched_msg:
-        if partia_matched_msg.name.find('*') < 0:
+        if partial_matched_msg.name.find('*') < 0:
             send_msg = partial_matched_msg;
             print("Partial match:" + matched_msg.name);
     else:
