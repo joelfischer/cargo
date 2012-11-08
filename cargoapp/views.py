@@ -567,7 +567,7 @@ def receive_SMS(request):
         pro_msg = process_string(msg.name)
         if levenshtein(pro_msg, pro_text) <= len(pro_msg)/5:
             matched_msg = msg;
-        else if pro_msg.find(pro_text) >= 0:
+        elif pro_msg.find(pro_text) >= 0:
             partial_matched_msg = msg;
     
     if matched_msg:
