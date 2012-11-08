@@ -543,6 +543,7 @@ def receive_SMS(request):
     number = request.POST.get('sender');
     print('Received SMS: ' + text + '\n From: ' + number);
     matched_msg = None;
+    partial_matched_msg = None;
     matched_user = None;
     send_msg = None;
     
@@ -563,12 +564,19 @@ def receive_SMS(request):
     
     # Check if text matches a message name
     for msg in Message.objects.all():
-        if levenshtein(process_string(msg.name), process_string(text)) <= len(process_string(msg.name))/5:
+        pro_msg = process_string(msg.name)
+        if levenshtein(pro_msg, pro_text) <= len(pro_msg)/5:
             matched_msg = msg;
+        else if pro_msg.find(pro_text) >= 0:
+            partial_matched_msg = msg;
     
     if matched_msg:
         print("Matched message: " + matched_msg.name);
         send_msg = matched_msg;
+    elif partial_matched_msg:
+        if msg.name.find('*') < 0:
+            send_msg = partial_matched_msg;
+            print("Partial match:" + matched_msg.name);
     else:
         print ("No match: " + text);
         # No match, check if default message exists.
