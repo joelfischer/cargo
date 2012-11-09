@@ -88,22 +88,18 @@ function updatePage() {
 				  else
 				  	method = "CALL";
 				  
-				  if (status >= 0)
-				  	line = "<div> <b> Sent ";
-				  else
-				  	line = "<div> Received ";
-				  line = line + method + '</b>: <b>'+callee+'</b>, with message: <b><abbr title="' + content +'">'+ message + '</abbr></b> at: '+ date;
-<!-- 			  if (status == 1)
+				  line = '<div> <b>' + method + '</b>: <b>'+callee+'</b>, with message: <b><abbr title="' + content +'">'+ message + '</abbr></b> at: '+ date + " Status: <b>";
+				  if (status == 1)
 				  	line = line + '<span style="color:orange">Waiting.</span>';
 				  else if (status == 0)
 				  	line = line + '<span style="color:green">Done!</span>';
-				  else if (status == 2)
+				  else if (status == -1)
 				  	line = line + '<span style="color:red">No Answer!</span>';
-			      else if (status == 3)
+			      else if (status == -2)
 				  	line = line + '<span style="color:red">Call failed!</span>';
-				  else if (status == 4)
-				  	line = line + '<span style="color:red">Call not made!</span>';  -->
-				  line = line + '</div><br>';
+				  else if (status == -3)
+				  	line = line + '<span style="color:red">Call not made!</span>';
+				  line = line + '</b></div><br>';
 				  text = line + text;
 			  }
 			  //$("#checkins").html(items);
