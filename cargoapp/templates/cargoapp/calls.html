@@ -87,19 +87,19 @@ function updatePage() {
 				  	method = "SMS";
 				  else
 				  	method = "CALL";
+				  	
+				  if (status >= 0)
+				  	direction = "Sent";
+				  else
+				  	direction = "Received";
 				  
-				  line = '<div> <b>' + method + '</b>: <b>'+callee+'</b>, with message: <b><abbr title="' + content +'">'+ message + '</abbr></b> at: '+ date + " Status: <b>";
-				  if (status == 1)
-				  	line = line + '<span style="color:orange">Waiting.</span>';
-				  else if (status == 0)
+				  line = '<div> <b>' + direction + " " + method + '</b>: <b>'+callee+'</b>, with message: <b><abbr title="' + content +'">'+ message + '</abbr></b> at: '+ date + " Status: <b>";
+				  if (status == 0 || status == -1)
 				  	line = line + '<span style="color:green">Done!</span>';
-				  else if (status == -1)
-				  	line = line + '<span style="color:red">No Answer!</span>';
-			      else if (status == -2)
-				  	line = line + '<span style="color:red">Call failed!</span>';
-				  else if (status == -3)
-				  	line = line + '<span style="color:red">Call not made!</span>';
-				  line = line + '</b></div><br>';
+				  else 
+				  	line = line + '<span style="color:red">Unknown!</span>';
+			      
+			      line = line + '</b></div><br>';
 				  text = line + text;
 			  }
 			  //$("#checkins").html(items);
