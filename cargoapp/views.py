@@ -554,9 +554,9 @@ def receive_SMS(request):
         print "Incoming number unknown: " + number;
     
     if matched_user:
-        call = Call(callee = matched_user.name + " (" + number + ")", message=text, content = text, is_SMS = True)
+        call = Call(callee = matched_user.name + " (" + number + ")", message=text, content = text, is_SMS = True, status = -1)
     else:
-        call = Call(callee=number, message=text, content = text, is_SMS = True)
+        call = Call(callee=number, message=text, content = text, is_SMS = True, status = -1)
     call.save();
     
     # Strip text of non alphanumeric characters
