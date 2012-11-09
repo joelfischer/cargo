@@ -89,10 +89,10 @@ function updatePage() {
 				  	method = "CALL";
 				  
 				  if (status >= 0)
-				  	line = "<div> <b> Sent "
+				  	line = "<div> <b> Sent ";
 				  else
-				  	line = "<div> Received "
-				  line = line + method + '</b>: <b>'+callee+'</b>, with message: <b><abbr title="' + content +'">'+ message + '</abbr></b> at: '+ date + " Status: <b>";
+				  	line = "<div> Received ";
+				  line = line + method + '</b>: <b>'+callee+'</b>, with message: <b><abbr title="' + content +'">'+ message + '</abbr></b> at: '+ date;
 <!-- 			  if (status == 1)
 				  	line = line + '<span style="color:orange">Waiting.</span>';
 				  else if (status == 0)
@@ -103,7 +103,7 @@ function updatePage() {
 				  	line = line + '<span style="color:red">Call failed!</span>';
 				  else if (status == 4)
 				  	line = line + '<span style="color:red">Call not made!</span>';  -->
-				  line = line + '</b></div><br>';
+				  line = line + '</div><br>';
 				  text = line + text;
 			  }
 			  //$("#checkins").html(items);
