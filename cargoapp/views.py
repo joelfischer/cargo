@@ -541,7 +541,7 @@ def loadPlayersAndClearCheckins(current_game):
 def receive_PIN(request):
     pin = request.POST.get('PIN');
     number = request.POST.get('sender');
-    print('Received PIN: ' + text + '\n From: ' + number);
+    print('Received PIN: ' + pin + '\n From: ' + number);
     matched_msg = None;
     partial_matched_msg = None;
     matched_user = None;
