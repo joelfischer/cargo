@@ -568,7 +568,7 @@ def receive_PIN(request):
     
     if send_msg:
         return HttpResponse(send_msg.content);
-    else
+    else:
         return HttpResponse(Template(Message.objects.get(name="#default")).safe_substitute({"pin":pin}));
             
             
