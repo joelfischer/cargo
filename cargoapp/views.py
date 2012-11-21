@@ -552,6 +552,8 @@ def receive_PIN(request):
         matched_user = User.objects.get(phone_num = number);
     except Exception as e:
         print "Incoming number unknown: " + number;
+    
+    text = "PIN ("+pin+")";
         
     if matched_user:
         call = Call(callee = matched_user.name + " (" + number + ")", message=text, content = text, is_SMS = False, status = -1)
