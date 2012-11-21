@@ -25,7 +25,7 @@ urlpatterns = patterns('',
     url(r'^logout/$','cargoapp.views.logout_view'),
     url(r'^get_score/$','cargoapp.views.get_score'),
     url(r'^receive_SMS/$','cargoapp.views.receive_SMS'),
-    url(r'^receive_SMS_get/$','cargoapp.views.receive_SMS_get'),
+    url(r'^receive_PIN/$','cargoapp.views.receive_PIN'),
     url(r'^game/$','cargoapp.views.set_up_game'),
     # url(r'^cargoapp/', include('cargoapp.foo.urls')),
 

@@ -536,6 +536,41 @@ def loadPlayersAndClearCheckins(current_game):
         if player.game_name == current_game:
             u = User (name = player.name, phone_num = player.phone_num, alias = player.alias, rfid = player.rfid, credit = player.credit, group = player.group, is_cargo = player.is_cargo, is_fake = player.is_fake, game_name = player.game_name)
             u.save()
+
+@csrf_exempt            
+def receive_PIN(request):
+    pin = request.POST.get('PIN');
+    number = request.POST.get('sender');
+    print('Received PIN: ' + text + '\n From: ' + number);
+    matched_msg = None;
+    partial_matched_msg = None;
+    matched_user = None;
+    send_msg = None;
+    
+    # Check if number sending text is recognised
+    try:
+        matched_user = User.objects.get(phone_num = number);
+    except Exception as e:
+        print "Incoming number unknown: " + number;
+        
+    if matched_user:
+        call = Call(callee = matched_user.name + " (" + number + ")", message=text, content = text, is_SMS = False, status = -1)
+    else:
+        call = Call(callee=number, message=text, content = text, is_SMS = False, status = -1)
+    call.save();
+    
+    for msg in Message.objects.all():
+        if msg.name[0]!='#':
+            continue;
+        pro_msg = process_string(msg.name)
+        if pro_msg == pin:
+            send_msg = msg;
+    
+    if send_msg:
+        return HttpResponse(send_msg.content);
+    else
+        return HttpResponse(Template(Message.objects.get(name="#default")).safe_substitute({"pin":pin}));
+            
             
 @csrf_exempt 
 def receive_SMS(request):
@@ -564,6 +599,8 @@ def receive_SMS(request):
     
     # Check if text matches a message name
     for msg in Message.objects.all():
+        if (msg.name[0]=='#')
+            continue;
         pro_msg = process_string(msg.name)
         if levenshtein(pro_msg, pro_text) <= len(pro_msg)/5:
             print("Found full match.");
