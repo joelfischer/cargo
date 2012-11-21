@@ -571,7 +571,7 @@ def receive_PIN(request):
     if send_msg:
         return HttpResponse(send_msg.content);
     else:
-        return HttpResponse(Template(Message.objects.get(name="#default")).safe_substitute({"pin":pin}));
+        return HttpResponse(Template(Message.objects.get(name="#default").content).safe_substitute({"pin":pin}));
             
             
 @csrf_exempt 
