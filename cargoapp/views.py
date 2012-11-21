@@ -599,7 +599,7 @@ def receive_SMS(request):
     
     # Check if text matches a message name
     for msg in Message.objects.all():
-        if (msg.name[0]=='#')
+        if (msg.name[0]=='#'):
             continue;
         pro_msg = process_string(msg.name)
         if levenshtein(pro_msg, pro_text) <= len(pro_msg)/5:
