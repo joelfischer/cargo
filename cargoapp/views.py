@@ -607,7 +607,7 @@ def receive_SMS(request):
         if levenshtein(pro_msg, pro_text) <= len(pro_msg)/5:
             print("Found full match.");
             matched_msg = msg;
-        elif pro_text.find(pro_msg) >= 0:
+        elif find_levensthein(pro_text, pro_msg):
             print("Found partial match.");
             partial_matched_msg = msg;
     
@@ -696,4 +696,11 @@ def levenshtein(s1, s2):
           matrix[zz+1][sz+1] = min(matrix[zz+1][sz] + 1, matrix[zz][sz+1] + 1, matrix[zz][sz] + 1)
     return matrix[l2][l1]
 
+def find_levenshtein(s1, s2):
+    if len(s1) <= len(s2):
+        return 0;
+    for i in range(len(s1) - len(s2)):
+        if levenshtein (s1[i:i+len(s2)], s2) <= len(s2)/5:
+            return 1;
+    return 0;
         
