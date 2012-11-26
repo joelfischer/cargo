@@ -607,7 +607,7 @@ def receive_SMS(request):
         if levenshtein(pro_msg, pro_text) <= len(pro_msg)/5:
             print("Found full match.");
             matched_msg = msg;
-        elif find_levensthein(pro_text, pro_msg):
+        elif find_levenshtein(pro_text, pro_msg):
             print("Found partial match.");
             partial_matched_msg = msg;
     
